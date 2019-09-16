@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <windows.h>
 #include <string.h>
+#include <locale.h>
 using namespace std;
 
 
@@ -42,4 +43,5 @@ void Draw(HDC hdc, Quadrangle* quadrangle, Quadrangle* quad2);
 void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle *quad2);
 int StringToBrushHash(const char string[]);
 int StringToPenStyle(const char string[]);
+bool IsQuadrangle(Quadrangle* quad);
 #pragma once

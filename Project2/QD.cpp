@@ -159,10 +159,13 @@ void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2)
 void Draw(HDC hdc, Quadrangle* quadrangle, Quadrangle* quad2)
 {
 	
-	SelectObject(hdc, CreatePen(StringToPenStyle(quadrangle->qd_pen.name), quadrangle->qd_pen.width, quadrangle->qd_pen.color));
-
-	switch (quadrangle->type)
+	if (IsQuadrangle(quadrangle))
 	{
+
+		SelectObject(hdc, CreatePen(StringToPenStyle(quadrangle->qd_pen.name), quadrangle->qd_pen.width, quadrangle->qd_pen.color));
+
+		switch (quadrangle->type)
+		{
 
 		case CONTOUR:
 		{
@@ -173,7 +176,7 @@ void Draw(HDC hdc, Quadrangle* quadrangle, Quadrangle* quad2)
 		}
 		case SHADED:
 		{
-			if (strcmp(quadrangle->qd_brush.name, "SOLID") == 0) 
+			if (strcmp(quadrangle->qd_brush.name, "SOLID") == 0)
 			{
 				SelectObject(hdc, CreateSolidBrush(quadrangle->qd_brush.color));
 			}
@@ -205,13 +208,46 @@ void Draw(HDC hdc, Quadrangle* quadrangle, Quadrangle* quad2)
 			SelectObject(hdc, CreatePen(StringToPenStyle(quad2->qd_pen.name), quad2->qd_pen.width, quad2->qd_pen.color));
 
 			Polygon(hdc, quad2->points, 4);
-			
+
 			break;
 		}
+		}
+
+
 	}
-
-
+	else 
+	{
+		printf_s("You have a mistake, bich");
+	}
 
 
 }
 
+bool IsQuadrangle(Quadrangle* quad)
+{
+	if (quad->points[0].x - quad->points[1].x)
+	{
+		float k;
+		k = (float)(quad->points[0].y - quad->points[1].y) / (float)(quad->points[0].x - quad->points[1].x);
+		float b = quad->points[0].y - k * quad->points[0].x;
+		float y1 = k * quad->points[2].x + b;
+		float y2 = k * quad->points[3].x + b;
+		if (y1 == quad->points[2].y || y2 == quad->points[3].y)
+			return false;// printf("В заданных кооринатах триточки лежат на одной прямой. \n");
+		if ((y1 > (float)quad->points[2].y && y2 > (float)quad->points[3].y) || (y1 < (float)quad->points[2].y && y2 < (float)quad->points[3].y))
+			return true;
+		return false;// printf("Координаты не удовлетворют условию выпуклого четырехугольника.\n");
+
+
+	}
+	else
+	{
+		if (quad->points[2].x == quad->points[0].x || quad->points[3].x == quad->points[0].x)
+			return false;//printf("В заданных кооринатах триточки лежат на одной прямой. \n");
+		if ((quad->points[0].x > quad->points[2].x && quad->points[1].x > quad->points[3].x) || (quad->points[0].x < quad->points[2].x && quad->points[1].x < quad->points[3].x))
+			return true;
+		return false;//printf("Координаты не удовлетворют условию выпуклого четырехугольника.\n");
+	}
+
+	return true;
+}

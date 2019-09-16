@@ -2,6 +2,7 @@
 
 void main()
 {
+	setlocale(LC_ALL, "RUSSIAN");
 	FILE* file = fopen("test.txt", "r");
 	Quadrangle *quad = new Quadrangle, *quad2 = new Quadrangle;
 	HWND hwnd = GetConsoleWindow();
