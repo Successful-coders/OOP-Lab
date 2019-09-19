@@ -93,9 +93,8 @@ COLORREF RGBToColor(int R, int G, int B)
 	return RGB(R, G, B);
 }
 
-void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2)
+void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2, HDC hdc)
 {
-	// read points
 	for (int i = 0; i < 4; i++)
 		fscanf(file, "%d %d", &(quad->points[i].x), &(quad->points[i].y));
 
@@ -107,12 +106,14 @@ void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2)
 	fscanf(file, "%i %i %i", &Red, &Green, &Blue);
 	quad->qd_pen.color = RGBToColor(Red, Green, Blue);
 
+	
+
 	switch (quad->type)
 	{
 	case CONTOUR:
 	{
 		memcpy(quad->qd_brush.name, "SOLID", 11);
-		quad2->qd_brush.color = RGBToColor(0, 0, 0);
+		quad2->qd_brush.color = GetBkColor(hdc);
 		break;
 	}
 
@@ -156,71 +157,81 @@ void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2)
 
 }
 
-void Draw(HDC hdc, Quadrangle* quadrangle, Quadrangle* quad2)
+void Draw(HDC hdc, HWND hwnd, Quadrangle* quadrangle, Quadrangle* quad2)
 {
 	
-	if (IsQuadrangle(quadrangle))
+	if (IsQuadrangle(quadrangle) && IsInFrame(hwnd, quadrangle))
 	{
+		HPEN hRedPen = CreatePen(StringToPenStyle(quadrangle->qd_pen.name), quadrangle->qd_pen.width, quadrangle->qd_pen.color);
+		HPEN hOldPen = SelectPen(hdc, hRedPen);
+		HBRUSH hGreenBrush = CreateSolidBrush(quadrangle->qd_brush.color);
+		HBRUSH hOldBrush = SelectBrush(hdc, hGreenBrush);
 
-		SelectObject(hdc, CreatePen(StringToPenStyle(quadrangle->qd_pen.name), quadrangle->qd_pen.width, quadrangle->qd_pen.color));
+		//SelectObject(hdc, hOldPen);
 
 		switch (quadrangle->type)
 		{
 
-		case CONTOUR:
-		{
-			SelectObject(hdc, CreateHatchBrush(NULL_BRUSH, quadrangle->qd_brush.color));
-
-			Polygon(hdc, quadrangle->points, 4);
-			break;
-		}
-		case SHADED:
-		{
-			if (strcmp(quadrangle->qd_brush.name, "SOLID") == 0)
+			case CONTOUR:
 			{
-				SelectObject(hdc, CreateSolidBrush(quadrangle->qd_brush.color));
+				//SelectObject(hdc, CreateHatchBrush(NULL_BRUSH, quadrangle->qd_brush.color));
+
+				Polygon(hdc, quadrangle->points, 4);
+				break;
 			}
-			else
+			case SHADED:
 			{
-				SelectObject(hdc, CreateHatchBrush(StringToBrushHash(quadrangle->qd_brush.name), quadrangle->qd_brush.color));
-			}
+				if (strcmp(quadrangle->qd_brush.name, "SOLID") == 0)
+				{
+					HBRUSH hNewBrush = CreateSolidBrush(quadrangle->qd_brush.color);
+					//SelectObject(hdc, CreateSolidBrush(quadrangle->qd_brush.color));
+				}
+				else
+				{
+					HBRUSH hNewBrush = CreateHatchBrush(StringToBrushHash(quadrangle->qd_brush.name), quadrangle->qd_brush.color);
+					//SelectObject(hdc, CreateHatchBrush(StringToBrushHash(quadrangle->qd_brush.name), quadrangle->qd_brush.color));
+				}
 
-			Polygon(hdc, quadrangle->points, 4);
-			break;
-		}
-		case DONUT:
-		{
-			if (strcmp(quadrangle->qd_brush.name, "SOLID") == 0)
+				Polygon(hdc, quadrangle->points, 4);
+				break;
+			}
+			case DONUT:
 			{
-				SelectObject(hdc, CreateSolidBrush(quadrangle->qd_brush.color));
+				if (IsQuadrangle(quad2) && IsDonut(quadrangle, quad2))
+				{
+					if (strcmp(quadrangle->qd_brush.name, "SOLID") == 0)
+					{
+						HBRUSH hNewBrush = CreateSolidBrush(quadrangle->qd_brush.color);
+						//SelectObject(hdc, CreateSolidBrush(quadrangle->qd_brush.color));
+					}
+					else
+					{
+						HBRUSH hNewBrush = CreateHatchBrush(StringToBrushHash(quadrangle->qd_brush.name), quadrangle->qd_brush.color);
+						//SelectObject(hdc, CreateHatchBrush(StringToBrushHash(quadrangle->qd_brush.name), quadrangle->qd_brush.color));
+					}
+					HPEN hNewPen = CreatePen(StringToPenStyle(quadrangle->qd_pen.name), quadrangle->qd_pen.width, quadrangle->qd_pen.color);
+					//SelectObject(hdc, CreatePen(StringToPenStyle(quadrangle->qd_pen.name), quadrangle->qd_pen.width, quadrangle->qd_pen.color));
+
+					Polygon(hdc, quadrangle->points, 4);
+
+
+
+					HBRUSH hNewBrush = CreateSolidBrush(RGB(0, 0, 0));
+					//SelectObject(hdc, CreateSolidBrush(RGB(0, 0, 0)));
+
+					HPEN hNewPen2 = CreatePen(StringToPenStyle(quad2->qd_pen.name), quad2->qd_pen.width, quad2->qd_pen.color);
+					//SelectObject(hdc, CreatePen(StringToPenStyle(quad2->qd_pen.name), quad2->qd_pen.width, quad2->qd_pen.color));
+
+					Polygon(hdc, quad2->points, 4);
+
+					break;
+				}
+
 			}
-			else
-			{
-				SelectObject(hdc, CreateHatchBrush(StringToBrushHash(quadrangle->qd_brush.name), quadrangle->qd_brush.color));
-			}
-			SelectObject(hdc, CreatePen(StringToPenStyle(quadrangle->qd_pen.name), quadrangle->qd_pen.width, quadrangle->qd_pen.color));
-
-			Polygon(hdc, quadrangle->points, 4);
-
-
-
-			SelectObject(hdc, CreateSolidBrush(RGB(0, 0, 0)));
-			SelectObject(hdc, CreatePen(StringToPenStyle(quad2->qd_pen.name), quad2->qd_pen.width, quad2->qd_pen.color));
-
-			Polygon(hdc, quad2->points, 4);
-
-			break;
-		}
 		}
 
 
 	}
-	else 
-	{
-		printf_s("You have a mistake, bich");
-	}
-
-
 }
 
 bool IsQuadrangle(Quadrangle* quad)
@@ -233,21 +244,78 @@ bool IsQuadrangle(Quadrangle* quad)
 		float y1 = k * quad->points[2].x + b;
 		float y2 = k * quad->points[3].x + b;
 		if (y1 == quad->points[2].y || y2 == quad->points[3].y)
-			return false;// printf("В заданных кооринатах триточки лежат на одной прямой. \n");
+		{
+			printf("В заданных кооринатах три точки лежат на одной прямой. \n");
+			return false;
+		}
 		if ((y1 > (float)quad->points[2].y && y2 > (float)quad->points[3].y) || (y1 < (float)quad->points[2].y && y2 < (float)quad->points[3].y))
 			return true;
-		return false;// printf("Координаты не удовлетворют условию выпуклого четырехугольника.\n");
-
+		else
+		{
+			printf("Координаты не удовлетворют условию выпуклого четырехугольника.\n");
+			return false;
+		}
 
 	}
 	else
 	{
 		if (quad->points[2].x == quad->points[0].x || quad->points[3].x == quad->points[0].x)
-			return false;//printf("В заданных кооринатах триточки лежат на одной прямой. \n");
+		{
+
+			printf("В заданных кооринатах три точки лежат на одной прямой. \n");
+			return false;
+		}
 		if ((quad->points[0].x > quad->points[2].x && quad->points[1].x > quad->points[3].x) || (quad->points[0].x < quad->points[2].x && quad->points[1].x < quad->points[3].x))
 			return true;
-		return false;//printf("Координаты не удовлетворют условию выпуклого четырехугольника.\n");
+		else
+		{
+		printf("Координаты не удовлетворют условию выпуклого четырехугольника.\n");
+		return false;
+		}
 	}
 
 	return true;
+}
+
+bool IsInFrame(HWND hwnd, Quadrangle *qd)
+{
+	RECT rt;
+	GetClientRect(hwnd, &rt);
+	for (int i = 0; i < 4; i++)
+	{
+		if (qd->points[i].x > rt.right || qd->points[i].y > rt.bottom || qd->points[i].x < 0 || qd->points[i].y < 0)
+		{
+			printf_s("Координаты фигуры не входят в рамки окна \n");
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool IsDonut(Quadrangle* quad1, Quadrangle* quad2)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (!IsInQuadrangle(quad1->points[0], quad1->points[1], quad1->points[2], quad1->points[3], quad2->points[i]))
+		{
+			printf("Не вложен");
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool IsInQuadrangle(POINT P1, POINT P2, POINT P3, POINT P4, POINT PTest)
+{
+	int a = (P1.x - PTest.x) * (P2.y - P1.y) - (P2.x - P1.x) * (P1.y - PTest.y);
+	int b = (P2.x - PTest.x) * (P3.y - P2.y) - (P3.x - P2.x) * (P2.y - PTest.y);
+	int c = (P3.x - PTest.x) * (P4.y - P3.y) - (P4.x - P3.x) * (P3.y - PTest.y);
+	int d = (P4.x - PTest.x) * (P1.y - P4.y) - (P1.x - P4.x) * (P4.y - PTest.y);
+
+	if ((a >= 0 && b >= 0 && c >= 0 && d >= 0) || (a <= 0 && b <= 0 && c <= 0 && d <= 0))
+		return true;
+	else
+		return false;
 }
