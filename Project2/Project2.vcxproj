@@ -115,14 +115,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="brush.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="pen.cpp" />
     <ClCompile Include="QD.cpp" />
     <ClCompile Include="QdCountour.cpp" />
     <ClCompile Include="QdDonut.cpp" />
     <ClCompile Include="QdShaded.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="brush.h" />
+    <ClInclude Include="pen.h" />
     <ClInclude Include="QD.h" />
+    <ClInclude Include="QdCountour.h" />
+    <ClInclude Include="QdDonut.h" />
+    <ClInclude Include="QdShaded.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt" />

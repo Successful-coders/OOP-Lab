@@ -1,61 +1,295 @@
-#include "Qd.h"
-
-class QuadrangleCountour // Check in set
+#include "QdCountour.h"
+using namespace std;
+QuadrangleCountour :: QuadrangleCountour()
 {
-private:
-	DRAW_TYPE type;
-	POINT points[4];
-	PEN qd_pen;
-	BRUSH qd_brush;
-	HDC hdc;
-	HWND hwnd;
-public:
-	QuadrangleCountour()
+	this->type = CONTOUR;
+	this->points[0].x = 50;
+	this->points[0].y = 50;
+	this->points[0].x = 100;
+	this->points[0].y = 50;
+	this->points[0].x = 100;
+	this->points[0].y = 100;
+	this->points[0].x = 50;
+	this->points[0].y = 100;
+	PEN qd_pen();
+	BRUSH qd_brush();
+}
+QuadrangleCountour :: QuadrangleCountour(DRAW_TYPE type, POINT* points, PEN qd_pen, BRUSH qd_brush)
+{
+	this->type = type;
+	for (int i = 0; i < 4; i++)
 	{
-		this->type = CONTOUR;
-		this->points[0].x = 50;
-		this->points[0].y = 50;
-		this->points[0].x = 100;
-		this->points[0].y = 50;
-		this->points[0].x = 100;
-		this->points[0].y = 100;
-		this->points[0].x = 50;
-		this->points[0].y = 100;
-		PEN qd_pen();
-		BRUSH qd_brush();
+		this->points[i] = points[i];
 	}
-	QuadrangleCountour(DRAW_TYPE type, POINT* points, PEN qd_pen, BRUSH qd_brush)
+	this->qd_pen = qd_pen;
+	this->qd_brush = qd_brush;
+}
+DRAW_TYPE QuadrangleCountour ::  GetType()
+{
+	return type;
+}
+void QuadrangleCountour::SetType(DRAW_TYPE type)
+{
+	this->type = type;
+}
+POINT* QuadrangleCountour::GetPoint()
+{
+	return points;
+}
+void QuadrangleCountour::SetPoint(POINT* points)
+{
+	for (int i = 0; i < 4; i++)
 	{
-		this->type = type;
-		for (int i = 0; i < 4; i++)
-		{
-			this->points[i] = points[i];
-		}
-		this->qd_pen = qd_pen;
-		this->qd_brush = qd_brush;
+		this->points[i] = points[i];
 	}
-	void Draw()
-	{
+}
+PEN QuadrangleCountour:: GetPen()
+{
+	return qd_pen;
+}
+void QuadrangleCountour:: SetPen(char* name, int width, COLORREF color)
+{
+	this->qd_pen = PEN(name, width, color);
+}
+BRUSH QuadrangleCountour:: GetBrush()
+{
+	return qd_brush;
+}
+void QuadrangleCountour:: SetBrush(char* name, COLORREF color)
+{
+	this->qd_brush = BRUSH(name, color);
+}
 
-	}
-	DRAW_TYPE GetType()
+void QuadrangleCountour :: Draw()
+{
+	int a = 1;
+}
+
+DRAW_TYPE QuadrangleCountour:: StringToEnum(const char string[])
+{
+	if (strcmp(string, "CONTOUR") == 0)
 	{
-		return type;
+		return CONTOUR;
 	}
-	void SetType(DRAW_TYPE type)
+	else if (strcmp(string, "SHADED") == 0)
 	{
-		this->type = type;
+		return SHADED;
 	}
-	POINT* GetPoint()
+	else if (strcmp(string, "DONUT") == 0)
 	{
-		return points;
+		return DONUT;
 	}
-	void SetPoint(POINT* points)
+	else
 	{
-		for (int i = 0; i < 4; i++)
+		throw INCORRECT_DRAW_TYPE;
+	}
+}
+int QuadrangleCountour::StringToBrushHash(const char string[])
+{
+	if (strcmp(string, "HS_BDIAGONAL") == 0)
+	{
+		return HS_BDIAGONAL;
+	}
+	else if (strcmp(string, "HS_CROSS") == 0)
+	{
+		return HS_CROSS;
+	}
+	else if (strcmp(string, "HS_DIAGCROSS") == 0)
+	{
+		return HS_DIAGCROSS;
+	}
+	else if (strcmp(string, "HS_FDIAGONAL") == 0)
+	{
+		return HS_FDIAGONAL;
+	}
+	else if (strcmp(string, "HS_HORIZONTAL") == 0)
+	{
+		return HS_HORIZONTAL;
+	}
+	else if (strcmp(string, "HS_VERTICAL") == 0)
+	{
+		return HS_VERTICAL;
+	}
+	else
+	{
+		throw INCORRECT_BRUSH;
+	}
+}
+int QuadrangleCountour::StringToPenStyle(const char string[])
+{
+	if (strcmp(string, "PS_SOLID") == 0)
+	{
+		return PS_SOLID;
+	}
+	else if (strcmp(string, "PS_DASH") == 0)
+	{
+		return PS_DASH;
+	}
+	else if (strcmp(string, "PS_DOT") == 0)
+	{
+		return PS_DOT;
+	}
+	else if (strcmp(string, "PS_DASHDOT") == 0)
+	{
+		return PS_DASHDOT;
+	}
+	else if (strcmp(string, "PS_DASHDOTDOT") == 0)
+	{
+		return PS_DASHDOTDOT;
+	}
+	else if (strcmp(string, "PS_NULL") == 0)
+	{
+		return PS_NULL;
+	}
+	else if (strcmp(string, "PS_INSIDEFRAME") == 0)
+	{
+		return PS_INSIDEFRAME;
+	}
+	else
+	{
+		throw INCORRECT_PEN_STYLE;
+	}
+}
+
+
+
+void QuadrangleCountour::Draw(HDC hdc, HWND hwnd, Quadrangle quad)
+{
+	try
+	{
+		CheckConvex(quad);
+		CheckInFrame(hwnd, quad);
+	}
+	catch (ERROR error)
+	{
+		return PrintError(error);
+	}
+
+	//Creating pen
+	HPEN newPen;
+	try
+	{
+		newPen = CreatePen(StringToPenStyle(quad.qd_pen.name), quad.qd_pen.width, quad.qd_pen.color);
+	}
+	catch (ERROR error)
+	{
+		return PrintError(error);
+	}
+	HPEN oldPen = SelectPen(hdc, newPen);
+
+	HBRUSH newBrush;
+	HBRUSH oldBrush;
+
+
+	//Creating brush
+	newBrush = GetStockBrush(NULL_BRUSH);
+	oldBrush = SelectBrush(hdc, newBrush);
+
+	Polygon(hdc, quad.points, 4);
+
+}
+
+void QuadrangleCountour::PrintError(ERROR error)
+{
+	switch (error)
+	{
+	case INCORRECT_DRAW_TYPE:
+	{
+		printf("Неверно задан тип фигуры\n");
+		break;
+	}
+	case INCORRECT_BRUSH:
+	{
+		printf("Неверно задан тип кисти\n");
+		break;
+	}
+	case INCORRECT_PEN_STYLE:
+	{
+		printf("Неверно задан тип пера\n");
+		break;
+	}
+	case OUT_FRAME:
+	{
+		printf("Координаты фигуры не входят в рамки окна\n");
+		break;
+	}
+	case NOT_INCLUDED:
+	{
+		printf("Второй четырехугольник не вложен в первый\n");
+		break;
+	}
+	case NOT_CONVEX:
+	{
+		printf("Координаты не удовлетворют условию выпуклого четырехугольника\n");
+		break;
+	}
+	case THREE_POINTS_IN_LINE:
+	{
+		printf("В заданных кооринатах три точки лежат на одной прямой\n");
+		break;
+	}
+	}
+
+	_getch();
+}
+void QuadrangleCountour::CheckConvex(Quadrangle quad)
+{
+	if (!IsPoint(quad.points[0], quad.points[1], quad.points[2], quad.points[3])
+		|| !IsPoint(quad.points[1], quad.points[2], quad.points[3], quad.points[0])
+		|| !IsPoint(quad.points[2], quad.points[3], quad.points[0], quad.points[1])
+		|| !IsPoint(quad.points[3], quad.points[0], quad.points[1], quad.points[2]))
+	{
+		throw NOT_CONVEX;
+	}
+}
+void QuadrangleCountour::CheckInFrame(HWND hwnd, Quadrangle qd)
+{
+	RECT rt;
+	GetClientRect(hwnd, &rt);
+	for (int i = 0; i < 4; i++)
+	{
+		if (qd.points[i].x > rt.right || qd.points[i].y > rt.bottom || qd.points[i].x < 0 || qd.points[i].y < 0)
 		{
-			this->points[i] = points[i];
+			throw OUT_FRAME;
 		}
 	}
-	//TODO for all
-};
+}
+
+bool QuadrangleCountour::IsPoint(POINT k1, POINT k2, POINT k3, POINT k4)
+{
+	if (k1.x - k2.x)
+	{
+		float k;
+		k = (float)(k1.y - k2.y) / (float)(k1.x - k2.x);
+		float b = k1.y - k * k1.x;
+		float y1 = k * k3.x + b;
+		float y2 = k * k4.x + b;
+		if (y1 == k3.y || y2 == k4.y)
+		{
+			throw THREE_POINTS_IN_LINE;
+		}
+		if ((y1 > (float)k3.y && y2 > (float)k4.y) || (y1 < (float)k3.y && y2 < (float)k4.y))
+		{
+			return true;
+		}
+		else
+		{
+			throw NOT_CONVEX;
+		}
+	}
+	else
+	{
+		if (k3.x == k1.x || k4.x == k1.x)
+		{
+			throw THREE_POINTS_IN_LINE;
+		}
+		if ((k1.x > k3.x && k2.x > k4.x) || (k1.x < k3.x && k2.x < k4.x))
+		{
+			return true;
+		}
+		else
+		{
+			throw NOT_CONVEX;
+		}
+	}
+}
