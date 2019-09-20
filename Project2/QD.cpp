@@ -218,6 +218,16 @@ void Draw(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2)
 		}
 		case DONUT:
 		{
+
+			try
+			{
+				CheckConvex(quad2);
+				CheckIncluded(quad, quad2);
+			}
+			catch (ERROR error)
+			{
+				return PrintError(error);
+			}
 			//Creating brush
 			if (strcmp(quad.qd_brush.name, "SOLID") == 0)
 			{
@@ -237,16 +247,6 @@ void Draw(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2)
 			oldBrush = SelectBrush(hdc, newBrush);
 
 			Polygon(hdc, quad.points, 4);
-
-			try
-			{
-				CheckConvex(quad2);
-				CheckIncluded(quad, quad2);
-			}
-			catch (ERROR error)
-			{
-				return PrintError(error);
-			}
 
 			//Creating pen
 			try
@@ -283,37 +283,37 @@ void PrintError(ERROR error)
 	{
 		case INCORRECT_DRAW_TYPE:
 		{
-			printf("Неверно задан тип фигуры");
+			printf("Неверно задан тип фигуры\n");
 			break;
 		}
 		case INCORRECT_BRUSH:
 		{
-			printf("Неверно задан тип кисти");
+			printf("Неверно задан тип кисти\n");
 			break;
 		}
 		case INCORRECT_PEN_STYLE:
 		{
-			printf("Неверно задан тип пера");
+			printf("Неверно задан тип пера\n");
 			break;
 		}
 		case OUT_FRAME:
 		{
-			printf("Координаты фигуры не входят в рамки окна");
+			printf("Координаты фигуры не входят в рамки окна\n");
 			break;
 		}
 		case NOT_INCLUDED:
 		{
-			printf("Второй четырехугольник не вложен в первый");
+			printf("Второй четырехугольник не вложен в первый\n");
 			break;
 		}
 		case NOT_CONVEX:
 		{
-			printf("Координаты не удовлетворют условию выпуклого четырехугольника");
+			printf("Координаты не удовлетворют условию выпуклого четырехугольника\n");
 			break;
 		}
 		case THREE_POINTS_IN_LINE:
 		{
-			printf("В заданных кооринатах три точки лежат на одной прямой");
+			printf("В заданных кооринатах три точки лежат на одной прямой\n");
 			break;
 		}
 	}
@@ -363,7 +363,7 @@ bool IsInQuadrangle(POINT P1, POINT P2, POINT P3, POINT P4, POINT PTest)
 	}
 	else
 	{
-		throw false;
+		return false;
 	}
 }
 bool IsPoint(POINT k1, POINT k2, POINT k3, POINT k4)
