@@ -86,10 +86,7 @@ int StringToPenStyle(const char string[])
 		throw INCORRECT_PEN_STYLE;
 	}
 }
-COLORREF RGBToColor(int R, int G, int B)
-{
-	return RGB(R, G, B);
-}
+
 
 void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2, HDC hdc)
 {
@@ -115,7 +112,7 @@ void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2, HDC h
 
 	int Red, Green, Blue;
 	fscanf(file, "%i %i %i", &Red, &Green, &Blue);
-	quad->qd_pen.color = RGBToColor(Red, Green, Blue);	
+	quad->qd_pen.color = RGB(Red, Green, Blue);	
 
 	switch (quad->type)
 	{
@@ -132,7 +129,7 @@ void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2, HDC h
 
 			int Red, Green, Blue;
 			fscanf(file, "%i %i %i", &Red, &Green, &Blue);
-			quad->qd_brush.color = RGBToColor(Red, Green, Blue);
+			quad->qd_brush.color = RGB(Red, Green, Blue);
 			break;
 		}
 
@@ -142,7 +139,7 @@ void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2, HDC h
 
 			int Red, Green, Blue;
 			fscanf(file, "%i %i %i", &Red, &Green, &Blue);
-			quad->qd_brush.color = RGBToColor(Red, Green, Blue);
+			quad->qd_brush.color = RGB(Red, Green, Blue);
 
 			for (int i = 0; i < 4; i++)
 				fscanf(file, "%d %d", &(quad2->points[i].x), &(quad2->points[i].y));
@@ -153,7 +150,7 @@ void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2, HDC h
 
 			int Red2, Green2, Blue2;
 			fscanf(file, "%i %i %i", &Red2, &Green2, &Blue2);
-			quad2->qd_pen.color = RGBToColor(Red2, Green2, Blue2);
+			quad2->qd_pen.color = RGB(Red2, Green2, Blue2);
 
 			memcpy(quad2->qd_brush.name, "SOLID", 11);
 			quad2->qd_brush.color = GetBkColor(hdc);

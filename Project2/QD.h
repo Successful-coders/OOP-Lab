@@ -6,15 +6,13 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <stdlib.h>
 #include <conio.h>
+#include <string.h>
 
 #undef ERROR
 
 using namespace std;
-
-
 enum ERROR
 {
 	INCORRECT_DRAW_TYPE,
@@ -33,31 +31,64 @@ enum DRAW_TYPE
 	DONUT
 };
 
-
-struct PEN
+class PEN
 {
+private:
 	char name[16];
 	int width;
 	COLORREF color;
+public:
+	PEN()
+	{
+		memcpy(this->name, "PS_SOLID", 16);
+		this->width = 1;
+		this->color = RGB(255, 255, 255);
+	}
+	PEN(char* name, int width, COLORREF color)
+	{
+		memcpy(this->name, name, 16);
+		this->width = width;
+		this->color = color;
+	}
+	char* GetName()
+	{
+		return name;
+	}
+	void SetName(char* name)
+	{
+		memcpy(this->name, name, 16);
+	}
+	//TODO for all
 };
 
-struct BRUSH
+class BRUSH
 {
+private:
 	char name[16];
 	COLORREF color;
+public:
+	BRUSH()
+	{
+		memcpy(this->name, "BLACK_BRUSH", 16);
+		this->color = RGB(0, 0, 0);
+	}
+	BRUSH(char* name, COLORREF color)
+	{
+		memcpy(this->name, name, 16);
+		this->color = color;
+	}
+	char* GetName()
+	{
+		return name;
+	}
+	void SetName(char* name)
+	{
+		memcpy(this->name, name, 16);
+	}
 };
 
-struct Quadrangle
-{
-	DRAW_TYPE type;
-	POINT points[4];
-	PEN qd_pen;
-	BRUSH qd_brush;
-};
 
 DRAW_TYPE StringToEnum(const char string[]);
-COLORREF RGBToColor(int R, int G, int B);
-void DrawContour(HDC hdc, HWND hwnd, Quadrangle quad);
 void DrawShaded(HDC hdc, HWND hwnd, Quadrangle quad);
 void DrawDonut(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2);
 void Read_Characteristics(Quadrangle* quad, FILE* file, Quadrangle* quad2, HDC hdc);

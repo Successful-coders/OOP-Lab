@@ -117,6 +117,9 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="QD.cpp" />
+    <ClCompile Include="QdCountour.cpp" />
+    <ClCompile Include="QdDonut.cpp" />
+    <ClCompile Include="QdShaded.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="QD.h" />
