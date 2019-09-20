@@ -11,14 +11,14 @@ QuadrangleDonut::QuadrangleDonut()
 	this->points[0].x = 50;
 	this->points[0].y = 100;
 
+	this->pointsIn[0].x = 25;
+	this->pointsIn[0].y = 25;
+	this->pointsIn[0].x = 50;
+	this->pointsIn[0].y = 25;
 	this->pointsIn[0].x = 50;
 	this->pointsIn[0].y = 50;
-	this->pointsIn[0].x = 100;
+	this->pointsIn[0].x = 25;
 	this->pointsIn[0].y = 50;
-	this->pointsIn[0].x = 100;
-	this->pointsIn[0].y = 100;
-	this->pointsIn[0].x = 50;
-	this->pointsIn[0].y = 100;
 	PEN qd_pen();
 	PEN qd_penIn();
 	BRUSH qd_brush();
@@ -38,10 +38,7 @@ QuadrangleDonut::QuadrangleDonut(DRAW_TYPE type, POINT* points, POINT* pointsIn,
 	this->qd_penIn = qd_penIn;
 	this->qd_brush = qd_brush;
 }
-void QuadrangleDonut::Draw()
-{
 
-}
 DRAW_TYPE QuadrangleDonut::GetType()
 {
 	return type;
@@ -50,11 +47,22 @@ void QuadrangleDonut::SetType(DRAW_TYPE type)
 {
 	this->type = type;
 }
-POINT* QuadrangleDonut::GetPoint()
+POINT *QuadrangleDonut::GetPoint()
+{
+	return points;
+}
+POINT *QuadrangleDonut::GetPointIn()
 {
 	return points;
 }
 void QuadrangleDonut::SetPoint(POINT* points)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		this->points[i] = points[i];
+	}
+}
+void QuadrangleDonut::SetPointIn(POINT* points)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -174,15 +182,15 @@ int QuadrangleDonut::StringToPenStyle(const char string[])
 
 
 
-void QuadrangleDonut::Draw(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2)
+void QuadrangleDonut::Draw(HDC hdc, HWND hwnd)
 {
 	try
 	{
-		CheckConvex(quad);
-		CheckInFrame(hwnd, quad);
+		CheckConvex();
+		CheckInFrame(hwnd);
 
-		CheckConvex(quad2);
-		CheckIncluded(quad, quad2);
+		CheckConvex();
+		CheckIncluded();
 	}
 	catch (ERROR error)
 	{
@@ -193,7 +201,7 @@ void QuadrangleDonut::Draw(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2
 	HPEN newPen;
 	try
 	{
-		newPen = CreatePen(StringToPenStyle(quad.qd_pen.name), quad.qd_pen.width, quad.qd_pen.color);
+		newPen = CreatePen(StringToPenStyle(this->GetPen.GetName), this->GetPen.GetWidth, this->GetPen.GetColor);
 	}
 	catch (ERROR error)
 	{
@@ -205,15 +213,15 @@ void QuadrangleDonut::Draw(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2
 	HBRUSH oldBrush;
 
 	//Creating brush
-	if (strcmp(quad.qd_brush.name, "SOLID") == 0)
+	if (strcmp(this->GetBrush.GetName, "SOLID") == 0)
 	{
-		newBrush = CreateSolidBrush(quad.qd_brush.color);
+		newBrush = CreateSolidBrush(this->GetBrush.GetColor);
 	}
 	else
 	{
 		try
 		{
-			newBrush = CreateHatchBrush(StringToBrushHash(quad.qd_brush.name), quad.qd_brush.color);
+			newBrush = CreateHatchBrush(StringToBrushHash(this->GetBrush.GetName), this->GetBrush.GetColor);
 		}
 		catch (ERROR error)
 		{
@@ -222,12 +230,12 @@ void QuadrangleDonut::Draw(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2
 	}
 	oldBrush = SelectBrush(hdc, newBrush);
 
-	Polygon(hdc, quad.points, 4);
+	Polygon(hdc, this->GetPoint, 4);
 
 	//Creating pen
 	try
 	{
-		newPen = CreatePen(StringToPenStyle(quad2.qd_pen.name), quad2.qd_pen.width, quad2.qd_pen.color);
+		newPen = CreatePen(StringToPenStyle(this->GetPenIn.GetName), this->GetPenIn.GetWidth, this->GetPenIn.GetColor);
 	}
 	catch (ERROR error)
 	{
@@ -239,7 +247,7 @@ void QuadrangleDonut::Draw(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2
 	newBrush = CreateSolidBrush(GetBkColor(hdc));
 	oldBrush = SelectBrush(hdc, newBrush);
 
-	Polygon(hdc, quad2.points, 4);
+	Polygon(hdc, this->GetPointIn, 4);
 
 }
 
@@ -287,33 +295,43 @@ void QuadrangleDonut::PrintError(ERROR error)
 
 	_getch();
 }
-void QuadrangleDonut::CheckConvex(Quadrangle quad)
+void QuadrangleDonut::CheckConvex()
 {
-	if (!IsPoint(quad.points[0], quad.points[1], quad.points[2], quad.points[3])
-		|| !IsPoint(quad.points[1], quad.points[2], quad.points[3], quad.points[0])
-		|| !IsPoint(quad.points[2], quad.points[3], quad.points[0], quad.points[1])
-		|| !IsPoint(quad.points[3], quad.points[0], quad.points[1], quad.points[2]))
+	if (!IsPoint(this->GetPoint[0], this->GetPoint[1], this->GetPoint[2], this->GetPoint[3])
+		|| !IsPoint(this->GetPoint[1], this->GetPoint[2], this->GetPoint[3], this->GetPoint[0])
+		|| !IsPoint(this->GetPoint[2], this->GetPoint[3], this->GetPoint[0], this->GetPoint[1])
+		|| !IsPoint(this->GetPoint[3], this->GetPoint[0], this->GetPoint[1], this->GetPoint[2]))
 	{
 		throw NOT_CONVEX;
 	}
 }
-void QuadrangleDonut::CheckInFrame(HWND hwnd, Quadrangle qd)
+void QuadrangleDonut::CheckConvex2()
+{
+	if (!IsPoint(this->GetPointIn[0], this->GetPointIn[1], this->GetPointIn[2], this->GetPointIn[3])
+		|| !IsPoint(this->GetPointIn[1], this->GetPointIn[2], this->GetPointIn[3], this->GetPointIn[0])
+		|| !IsPoint(this->GetPointIn[2], this->GetPointIn[3], this->GetPointIn[0], this->GetPointIn[1])
+		|| !IsPoint(this->GetPointIn[3], this->GetPointIn[0], this->GetPointIn[1], this->GetPointIn[2]))
+	{
+		throw NOT_CONVEX;
+	}
+}
+void QuadrangleDonut::CheckInFrame(HWND hwnd)
 {
 	RECT rt;
 	GetClientRect(hwnd, &rt);
 	for (int i = 0; i < 4; i++)
 	{
-		if (qd.points[i].x > rt.right || qd.points[i].y > rt.bottom || qd.points[i].x < 0 || qd.points[i].y < 0)
+		if (this->GetPoint[i].x > rt.right || this->GetPoint[i].y > rt.bottom || this->GetPoint[i].x < 0 || this->GetPoint[i].y < 0)
 		{
 			throw OUT_FRAME;
 		}
 	}
 }
-void QuadrangleDonut::CheckIncluded(Quadrangle quad1, Quadrangle quad2)
+void QuadrangleDonut::CheckIncluded()
 {
 	for (int i = 0; i < 4; i++)
 	{
-		if (!IsInQuadrangle(quad1.points[0], quad1.points[1], quad1.points[2], quad1.points[3], quad2.points[i]))
+		if (!IsInQuadrangle(this->GetPoint[0], this->GetPoint[1], this->GetPoint[2], this->GetPoint[3], this->GetPointIn[i]))
 		{
 			throw NOT_INCLUDED;
 		}

@@ -1,6 +1,6 @@
 #include "QdCountour.h"
 using namespace std;
-QuadrangleCountour :: QuadrangleCountour()
+QuadrangleContour::QuadrangleContour()
 {
 	this->type = CONTOUR;
 	this->points[0].x = 50;
@@ -14,7 +14,7 @@ QuadrangleCountour :: QuadrangleCountour()
 	PEN qd_pen();
 	BRUSH qd_brush();
 }
-QuadrangleCountour :: QuadrangleCountour(DRAW_TYPE type, POINT* points, PEN qd_pen, BRUSH qd_brush)
+QuadrangleContour::QuadrangleContour(DRAW_TYPE type, POINT* points, PEN qd_pen, BRUSH qd_brush)
 {
 	this->type = type;
 	for (int i = 0; i < 4; i++)
@@ -24,48 +24,44 @@ QuadrangleCountour :: QuadrangleCountour(DRAW_TYPE type, POINT* points, PEN qd_p
 	this->qd_pen = qd_pen;
 	this->qd_brush = qd_brush;
 }
-DRAW_TYPE QuadrangleCountour ::  GetType()
+DRAW_TYPE QuadrangleContour::  GetType()
 {
 	return type;
 }
-void QuadrangleCountour::SetType(DRAW_TYPE type)
+void QuadrangleContour::SetType(DRAW_TYPE type)
 {
 	this->type = type;
 }
-POINT* QuadrangleCountour::GetPoint()
+POINT* QuadrangleContour::GetPoint()
 {
 	return points;
 }
-void QuadrangleCountour::SetPoint(POINT* points)
+void QuadrangleContour::SetPoint(POINT* points)
 {
 	for (int i = 0; i < 4; i++)
 	{
 		this->points[i] = points[i];
 	}
 }
-PEN QuadrangleCountour:: GetPen()
+PEN QuadrangleContour:: GetPen()
 {
 	return qd_pen;
 }
-void QuadrangleCountour:: SetPen(char* name, int width, COLORREF color)
+void QuadrangleContour:: SetPen(char* name, int width, COLORREF color)
 {
 	this->qd_pen = PEN(name, width, color);
 }
-BRUSH QuadrangleCountour:: GetBrush()
+BRUSH QuadrangleContour:: GetBrush()
 {
 	return qd_brush;
 }
-void QuadrangleCountour:: SetBrush(char* name, COLORREF color)
+void QuadrangleContour:: SetBrush(char* name, COLORREF color)
 {
 	this->qd_brush = BRUSH(name, color);
 }
 
-void QuadrangleCountour :: Draw()
-{
-	int a = 1;
-}
 
-DRAW_TYPE QuadrangleCountour:: StringToEnum(const char string[])
+DRAW_TYPE QuadrangleContour:: StringToEnum(const char string[])
 {
 	if (strcmp(string, "CONTOUR") == 0)
 	{
@@ -84,7 +80,7 @@ DRAW_TYPE QuadrangleCountour:: StringToEnum(const char string[])
 		throw INCORRECT_DRAW_TYPE;
 	}
 }
-int QuadrangleCountour::StringToBrushHash(const char string[])
+int QuadrangleContour::StringToBrushHash(const char string[])
 {
 	if (strcmp(string, "HS_BDIAGONAL") == 0)
 	{
@@ -115,7 +111,7 @@ int QuadrangleCountour::StringToBrushHash(const char string[])
 		throw INCORRECT_BRUSH;
 	}
 }
-int QuadrangleCountour::StringToPenStyle(const char string[])
+int QuadrangleContour::StringToPenStyle(const char string[])
 {
 	if (strcmp(string, "PS_SOLID") == 0)
 	{
@@ -153,12 +149,12 @@ int QuadrangleCountour::StringToPenStyle(const char string[])
 
 
 
-void QuadrangleCountour::Draw(HDC hdc, HWND hwnd, Quadrangle quad)
+void QuadrangleContour::Draw(HDC hdc, HWND hwnd)
 {
 	try
 	{
-		CheckConvex(quad);
-		CheckInFrame(hwnd, quad);
+		CheckConvex();
+		CheckInFrame(hwnd);
 	}
 	catch (ERROR error)
 	{
@@ -169,7 +165,7 @@ void QuadrangleCountour::Draw(HDC hdc, HWND hwnd, Quadrangle quad)
 	HPEN newPen;
 	try
 	{
-		newPen = CreatePen(StringToPenStyle(quad.qd_pen.name), quad.qd_pen.width, quad.qd_pen.color);
+		newPen = CreatePen(StringToPenStyle(this->qd_pen.GetName), this->qd_pen.GetWidth, this->qd_pen.GetColor);
 	}
 	catch (ERROR error)
 	{
@@ -185,11 +181,11 @@ void QuadrangleCountour::Draw(HDC hdc, HWND hwnd, Quadrangle quad)
 	newBrush = GetStockBrush(NULL_BRUSH);
 	oldBrush = SelectBrush(hdc, newBrush);
 
-	Polygon(hdc, quad.points, 4);
+	Polygon(hdc, this->GetPoint, 4);
 
 }
 
-void QuadrangleCountour::PrintError(ERROR error)
+void QuadrangleContour::PrintError(ERROR error)
 {
 	switch (error)
 	{
@@ -232,30 +228,30 @@ void QuadrangleCountour::PrintError(ERROR error)
 
 	_getch();
 }
-void QuadrangleCountour::CheckConvex(Quadrangle quad)
+void QuadrangleContour::CheckConvex()
 {
-	if (!IsPoint(quad.points[0], quad.points[1], quad.points[2], quad.points[3])
-		|| !IsPoint(quad.points[1], quad.points[2], quad.points[3], quad.points[0])
-		|| !IsPoint(quad.points[2], quad.points[3], quad.points[0], quad.points[1])
-		|| !IsPoint(quad.points[3], quad.points[0], quad.points[1], quad.points[2]))
+	if (!IsPoint(this->GetPoint[0], this->GetPoint[1], this->GetPoint[2], this->GetPoint[3])
+		|| !IsPoint(this->GetPoint[1], this->GetPoint[2], this->GetPoint[3], this->GetPoint[0])
+		|| !IsPoint(this->GetPoint[2], this->GetPoint[3], this->GetPoint[0], this->GetPoint[1])
+		|| !IsPoint(this->GetPoint[3], this->GetPoint[0], this->GetPoint[1], this->GetPoint[2]))
 	{
 		throw NOT_CONVEX;
 	}
 }
-void QuadrangleCountour::CheckInFrame(HWND hwnd, Quadrangle qd)
+void QuadrangleContour::CheckInFrame(HWND hwnd)
 {
 	RECT rt;
 	GetClientRect(hwnd, &rt);
 	for (int i = 0; i < 4; i++)
 	{
-		if (qd.points[i].x > rt.right || qd.points[i].y > rt.bottom || qd.points[i].x < 0 || qd.points[i].y < 0)
+		if (this->GetPoint[i].x > rt.right || this->GetPoint[i].y > rt.bottom || this->GetPoint[i].x < 0 || this->GetPoint[i].y < 0)
 		{
 			throw OUT_FRAME;
 		}
 	}
 }
 
-bool QuadrangleCountour::IsPoint(POINT k1, POINT k2, POINT k3, POINT k4)
+bool QuadrangleContour::IsPoint(POINT k1, POINT k2, POINT k3, POINT k4)
 {
 	if (k1.x - k2.x)
 	{

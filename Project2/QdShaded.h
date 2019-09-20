@@ -16,12 +16,12 @@ private:
 	int StringToPenStyle(const char string[]);
 	void PrintError(ERROR error);
 	void CheckConvex();
-	void CheckInFrame();
-	bool IsPoint();
+	void CheckInFrame(HWND hwnd);
+	bool IsPoint(POINT k1, POINT k2, POINT k3, POINT k4);
 public:
 	QuadrangleShaded();
 	QuadrangleShaded(DRAW_TYPE type, POINT* points, PEN qd_pen, BRUSH qd_brush);
-	void Draw();
+	void Draw(HDC hdc, HWND hwnd);
 	DRAW_TYPE GetType();
 	void SetType(DRAW_TYPE type);
 	POINT* GetPoint();

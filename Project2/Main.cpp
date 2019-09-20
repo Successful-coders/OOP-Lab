@@ -1,7 +1,18 @@
 //Main.cpp
 #include "Qd.h"
-void Read_Characteristics(Quadrangle* quad, FILE* file, Quadrangle* quad2, HDC hdc)
+
+
+
+void main()
 {
+	setlocale(LC_ALL, "RUSSIAN");
+	FILE* file = fopen("test.txt", "r");
+
+	Quadrangle quad, quad2;
+	HWND hwnd = GetConsoleWindow();
+	HDC hdc = GetDC(hwnd);
+
+	SetBkColor(hdc, RGB(0, 0, 0));
 	char type[15];
 	fscanf(file, "%s", &type);
 	try
@@ -69,19 +80,8 @@ void Read_Characteristics(Quadrangle* quad, FILE* file, Quadrangle* quad2, HDC h
 		break;
 	}
 	}
-}
-void main()
-{
-	setlocale(LC_ALL, "RUSSIAN");
-	FILE* file = fopen("test.txt", "r");
 
-	Quadrangle quad, quad2;
-	HWND hwnd = GetConsoleWindow();
-	HDC hdc = GetDC(hwnd);
-
-	SetBkColor(hdc, RGB(0, 0, 0));
-
-	Read_Characteristics(&quad, file, &quad2, hdc);
+	
 	fclose(file);
 
 	do
@@ -90,21 +90,21 @@ void main()
 		{
 		case CONTOUR:
 		{
-			DrawContour(hdc, hwnd, quad);
+			DrawContour(hdc, hwnd);
 
 			break;
 		}
 		case SHADED:
 		{
 
-			DrawShaded(hdc, hwnd, quad);
+			DrawShaded(hdc, hwnd);
 
 			break;
 		}
 		case DONUT:
 		{
 
-			DrawDonut(hdc, hwnd, quad, quad2);
+			DrawDonut(hdc, hwnd);
 			break;
 		}
 		}

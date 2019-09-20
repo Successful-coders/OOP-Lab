@@ -23,10 +23,6 @@ QuadrangleShaded::QuadrangleShaded(DRAW_TYPE type, POINT* points, PEN qd_pen, BR
 	this->qd_pen = qd_pen;
 	this->qd_brush = qd_brush;
 }
-void QuadrangleShaded::Draw()
-{
-
-}
 DRAW_TYPE QuadrangleShaded::GetType()
 {
 	return type;
@@ -151,12 +147,12 @@ int QuadrangleShaded::StringToPenStyle(const char string[])
 
 
 
-void QuadrangleShaded::Draw(HDC hdc, HWND hwnd, Quadrangle quad)
+void QuadrangleShaded::Draw(HDC hdc, HWND hwnd)
 {
 	try
 	{
-		CheckConvex(quad);
-		CheckInFrame(hwnd, quad);
+		CheckConvex();
+		CheckInFrame(hwnd);
 	}
 	catch (ERROR error)
 	{
@@ -167,7 +163,7 @@ void QuadrangleShaded::Draw(HDC hdc, HWND hwnd, Quadrangle quad)
 	HPEN newPen;
 	try
 	{
-		newPen = CreatePen(StringToPenStyle(quad.qd_pen.name), quad.qd_pen.width, quad.qd_pen.color);
+		newPen = CreatePen(StringToPenStyle(this->qd_pen.GetName), this->qd_pen.GetWidth, this->qd_pen.GetColor);
 	}
 	catch (ERROR error)
 	{
@@ -180,15 +176,15 @@ void QuadrangleShaded::Draw(HDC hdc, HWND hwnd, Quadrangle quad)
 
 	//Creating brush
 	newBrush;;
-	if (strcmp(quad.qd_brush.name, "SOLID") == 0)
+	if (strcmp(this->GetBrush.GetName, "SOLID") == 0)
 	{
-		newBrush = CreateSolidBrush(quad.qd_brush.color);
+		newBrush = CreateSolidBrush(this->GetBrush.GetColor);
 	}
 	else
 	{
 		try
 		{
-			newBrush = CreateHatchBrush(StringToBrushHash(quad.qd_brush.name), quad.qd_brush.color);
+			newBrush = CreateHatchBrush(StringToBrushHash(this->GetBrush.GetName), this->GetBrush.GetColor);
 		}
 		catch (ERROR error)
 		{
@@ -197,7 +193,7 @@ void QuadrangleShaded::Draw(HDC hdc, HWND hwnd, Quadrangle quad)
 	}
 	oldBrush = SelectBrush(hdc, newBrush);
 
-	Polygon(hdc, quad.points, 4);
+	Polygon(hdc, this->GetPoint, 4);
 
 }
 void QuadrangleShaded::PrintError(ERROR error)
@@ -243,23 +239,23 @@ void QuadrangleShaded::PrintError(ERROR error)
 
 	_getch();
 }
-void QuadrangleShaded::CheckConvex(Quadrangle quad)
+void QuadrangleShaded::CheckConvex()
 {
-	if (!IsPoint(quad.points[0], quad.points[1], quad.points[2], quad.points[3])
-		|| !IsPoint(quad.points[1], quad.points[2], quad.points[3], quad.points[0])
-		|| !IsPoint(quad.points[2], quad.points[3], quad.points[0], quad.points[1])
-		|| !IsPoint(quad.points[3], quad.points[0], quad.points[1], quad.points[2]))
+	if (!IsPoint(this->GetPoint[0], this->GetPoint[1], this->GetPoint[2], this->GetPoint[3])
+		|| !IsPoint(this->GetPoint[1], this->GetPoint[2], this->GetPoint[3], this->GetPoint[0])
+		|| !IsPoint(this->GetPoint[2], this->GetPoint[3], this->GetPoint[0], this->GetPoint[1])
+		|| !IsPoint(this->GetPoint[3], this->GetPoint[0], this->GetPoint[1], this->GetPoint[2]))
 	{
 		throw NOT_CONVEX;
 	}
 }
-void QuadrangleShaded::CheckInFrame(HWND hwnd, Quadrangle qd)
+void QuadrangleShaded::CheckInFrame(HWND hwnd)
 {
 	RECT rt;
 	GetClientRect(hwnd, &rt);
 	for (int i = 0; i < 4; i++)
 	{
-		if (qd.points[i].x > rt.right || qd.points[i].y > rt.bottom || qd.points[i].x < 0 || qd.points[i].y < 0)
+		if (this->GetPoint[i].x > rt.right || this->GetPoint[i].y > rt.bottom || this->GetPoint[i].x < 0 || this->GetPoint[i].y < 0)
 		{
 			throw OUT_FRAME;
 		}
