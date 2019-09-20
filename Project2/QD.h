@@ -1,3 +1,4 @@
+//QD.h
 #pragma once
 
 #include <windows.h>
@@ -56,7 +57,9 @@ struct Quadrangle
 
 DRAW_TYPE StringToEnum(const char string[]);
 COLORREF RGBToColor(int R, int G, int B);
-void Draw(HDC hdc, HWND hwnd, Quadrangle quadrangle, Quadrangle quad2);
+void DrawContour(HDC hdc, HWND hwnd, Quadrangle quad);
+void DrawShaded(HDC hdc, HWND hwnd, Quadrangle quad);
+void DrawDonut(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2);
 void Read_Characteristics(Quadrangle* quad, FILE* file, Quadrangle* quad2, HDC hdc);
 int StringToBrushHash(const char string[]);
 int StringToPenStyle(const char string[]);

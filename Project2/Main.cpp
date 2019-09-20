@@ -1,3 +1,4 @@
+//Main.cpp
 #include "Qd.h"
 
 void main()
@@ -12,12 +13,34 @@ void main()
 	SetBkColor(hdc, RGB(0, 0, 0));
 
 	Read_Characteristics(&quad, file, &quad2, hdc);
+	fclose(file);
 
 	do
 	{
-		Draw(hdc, hwnd, quad, quad2);
+		switch (quad.type)
+		{
+		case CONTOUR:
+		{
+			DrawContour(hdc, hwnd, quad);
 
-		fclose(file);
+			break;
+		}
+		case SHADED:
+		{
+
+			DrawShaded(hdc, hwnd, quad);
+
+			break;
+		}
+		case DONUT:
+		{
+
+			DrawDonut(hdc, hwnd, quad, quad2);
+			break;
+		}
+		}
+	//	Draw(hdc, hwnd, quad, quad2);
+
 	} while (getch() != 27);
 }
 

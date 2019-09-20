@@ -1,3 +1,4 @@
+//QD.cpp
 #include "Qd.h"
 
 DRAW_TYPE StringToEnum(const char string[])
@@ -94,7 +95,15 @@ void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2, HDC h
 {
 	char type[15];
 	fscanf(file, "%s", &type);
-	quad->type = StringToEnum(type);
+	try
+	{ 
+		quad->type = StringToEnum(type);
+	}
+	catch (ERROR error)
+	{
+		return PrintError(error);
+	}
+
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -152,8 +161,8 @@ void Read_Characteristics(Quadrangle* quad, FILE *file, Quadrangle* quad2, HDC h
 		}
 	}
 }
-void Draw(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2)
-{	
+void DrawContour(HDC hdc, HWND hwnd, Quadrangle quad)
+{
 	try
 	{
 		CheckConvex(quad);
@@ -179,101 +188,130 @@ void Draw(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2)
 	HBRUSH newBrush;
 	HBRUSH oldBrush;
 
-	switch (quad.type)
+
+	//Creating brush
+	newBrush = GetStockBrush(NULL_BRUSH);
+	oldBrush = SelectBrush(hdc, newBrush);
+
+	Polygon(hdc, quad.points, 4);
+	
+}
+void DrawShaded(HDC hdc, HWND hwnd, Quadrangle quad)
+{
+	try
 	{
-		case CONTOUR:
-		{
-			//Creating brush
-			newBrush = GetStockBrush(NULL_BRUSH);
-			oldBrush = SelectBrush(hdc, newBrush);
-
-			Polygon(hdc, quad.points, 4);
-
-			break;
-		}
-		case SHADED:
-		{
-			//Creating brush
-			newBrush;;
-			if (strcmp(quad.qd_brush.name, "SOLID") == 0)
-			{
-				newBrush = CreateSolidBrush(quad.qd_brush.color);
-			}
-			else
-			{
-				try
-				{
-					newBrush = CreateHatchBrush(StringToBrushHash(quad.qd_brush.name), quad.qd_brush.color);
-				}
-				catch (ERROR error)
-				{
-					return PrintError(error);
-				}
-			}
-			oldBrush = SelectBrush(hdc, newBrush);
-
-			Polygon(hdc, quad.points, 4);
-
-			break;
-		}
-		case DONUT:
-		{
-
-			try
-			{
-				CheckConvex(quad2);
-				CheckIncluded(quad, quad2);
-			}
-			catch (ERROR error)
-			{
-				return PrintError(error);
-			}
-			//Creating brush
-			if (strcmp(quad.qd_brush.name, "SOLID") == 0)
-			{
-				newBrush = CreateSolidBrush(quad.qd_brush.color);
-			}
-			else
-			{
-				try
-				{
-					newBrush = CreateHatchBrush(StringToBrushHash(quad.qd_brush.name), quad.qd_brush.color);
-				}
-				catch (ERROR error)
-				{
-					return PrintError(error);
-				}
-			}
-			oldBrush = SelectBrush(hdc, newBrush);
-
-			Polygon(hdc, quad.points, 4);
-
-			//Creating pen
-			try
-			{
-				newPen = CreatePen(StringToPenStyle(quad2.qd_pen.name), quad2.qd_pen.width, quad2.qd_pen.color);
-			}
-			catch (ERROR error)
-			{
-				return PrintError(error);
-			}
-			oldPen = SelectPen(hdc, newPen);
-
-			//Creating brush
-			newBrush = CreateSolidBrush(GetBkColor(hdc));
-			oldBrush = SelectBrush(hdc, newBrush);
-
-			Polygon(hdc, quad2.points, 4);
-
-			break;
-		}
+		CheckConvex(quad);
+		CheckInFrame(hwnd, quad);
+	}
+	catch (ERROR error)
+	{
+		return PrintError(error);
 	}
 
-	SelectPen(hdc, oldPen);
-	DeletePen(newPen);
+	//Creating pen
+	HPEN newPen;
+	try
+	{
+		newPen = CreatePen(StringToPenStyle(quad.qd_pen.name), quad.qd_pen.width, quad.qd_pen.color);
+	}
+	catch (ERROR error)
+	{
+		return PrintError(error);
+	}
+	HPEN oldPen = SelectPen(hdc, newPen);
 
-	SelectBrush(hdc, oldBrush);
-	DeleteBrush(newBrush);
+	HBRUSH newBrush;
+	HBRUSH oldBrush;
+
+	//Creating brush
+	newBrush;;
+	if (strcmp(quad.qd_brush.name, "SOLID") == 0)
+	{
+		newBrush = CreateSolidBrush(quad.qd_brush.color);
+	}
+	else
+	{
+		try
+		{
+			newBrush = CreateHatchBrush(StringToBrushHash(quad.qd_brush.name), quad.qd_brush.color);
+		}
+		catch (ERROR error)
+		{
+			return PrintError(error);
+		}
+	}
+	oldBrush = SelectBrush(hdc, newBrush);
+
+	Polygon(hdc, quad.points, 4);
+	
+}
+void DrawDonut(HDC hdc, HWND hwnd, Quadrangle quad, Quadrangle quad2)
+{
+	try
+	{
+		CheckConvex(quad);
+		CheckInFrame(hwnd, quad);
+
+		CheckConvex(quad2);
+		CheckIncluded(quad, quad2);
+	}
+	catch (ERROR error)
+	{
+		return PrintError(error);
+	}
+
+	//Creating pen
+	HPEN newPen;
+	try
+	{
+		newPen = CreatePen(StringToPenStyle(quad.qd_pen.name), quad.qd_pen.width, quad.qd_pen.color);
+	}
+	catch (ERROR error)
+	{
+		return PrintError(error);
+	}
+	HPEN oldPen = SelectPen(hdc, newPen);
+
+	HBRUSH newBrush;
+	HBRUSH oldBrush;
+
+	//Creating brush
+	if (strcmp(quad.qd_brush.name, "SOLID") == 0)
+	{
+		newBrush = CreateSolidBrush(quad.qd_brush.color);
+	}
+	else
+	{
+		try
+		{
+			newBrush = CreateHatchBrush(StringToBrushHash(quad.qd_brush.name), quad.qd_brush.color);
+		}
+		catch (ERROR error)
+		{
+			return PrintError(error);
+		}
+	}
+	oldBrush = SelectBrush(hdc, newBrush);
+
+	Polygon(hdc, quad.points, 4);
+
+	//Creating pen
+	try
+	{
+		newPen = CreatePen(StringToPenStyle(quad2.qd_pen.name), quad2.qd_pen.width, quad2.qd_pen.color);
+	}
+	catch (ERROR error)
+	{
+		return PrintError(error);
+	}
+	oldPen = SelectPen(hdc, newPen);
+
+	//Creating brush
+	newBrush = CreateSolidBrush(GetBkColor(hdc));
+	oldBrush = SelectBrush(hdc, newBrush);
+
+	Polygon(hdc, quad2.points, 4);
+
 }
 
 
@@ -317,6 +355,8 @@ void PrintError(ERROR error)
 			break;
 		}
 	}
+	
+	_getch();
 }
 void CheckConvex(Quadrangle quad)
 {
