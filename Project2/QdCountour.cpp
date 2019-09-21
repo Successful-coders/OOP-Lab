@@ -61,25 +61,7 @@ void QuadrangleContour:: SetBrush(char* name, COLORREF color)
 }
 
 
-DRAW_TYPE QuadrangleContour:: StringToEnum(const char string[])
-{
-	if (strcmp(string, "CONTOUR") == 0)
-	{
-		return CONTOUR;
-	}
-	else if (strcmp(string, "SHADED") == 0)
-	{
-		return SHADED;
-	}
-	else if (strcmp(string, "DONUT") == 0)
-	{
-		return DONUT;
-	}
-	else
-	{
-		throw INCORRECT_DRAW_TYPE;
-	}
-}
+
 int QuadrangleContour::StringToBrushHash(const char string[])
 {
 	if (strcmp(string, "HS_BDIAGONAL") == 0)
@@ -185,49 +167,6 @@ void QuadrangleContour::Draw(HDC hdc, HWND hwnd)
 
 }
 
-void QuadrangleContour::PrintError(ERROR error)
-{
-	switch (error)
-	{
-	case INCORRECT_DRAW_TYPE:
-	{
-		printf("Неверно задан тип фигуры\n");
-		break;
-	}
-	case INCORRECT_BRUSH:
-	{
-		printf("Неверно задан тип кисти\n");
-		break;
-	}
-	case INCORRECT_PEN_STYLE:
-	{
-		printf("Неверно задан тип пера\n");
-		break;
-	}
-	case OUT_FRAME:
-	{
-		printf("Координаты фигуры не входят в рамки окна\n");
-		break;
-	}
-	case NOT_INCLUDED:
-	{
-		printf("Второй четырехугольник не вложен в первый\n");
-		break;
-	}
-	case NOT_CONVEX:
-	{
-		printf("Координаты не удовлетворют условию выпуклого четырехугольника\n");
-		break;
-	}
-	case THREE_POINTS_IN_LINE:
-	{
-		printf("В заданных кооринатах три точки лежат на одной прямой\n");
-		break;
-	}
-	}
-
-	_getch();
-}
 void QuadrangleContour::CheckConvex()
 {
 	if (!IsPoint(this->GetPoint[0], this->GetPoint[1], this->GetPoint[2], this->GetPoint[3])
