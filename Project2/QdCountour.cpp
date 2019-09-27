@@ -11,26 +11,17 @@ QuadrangleContour::QuadrangleContour()
 	this->points[0].y = 100;
 	this->points[0].x = 50;
 	this->points[0].y = 100;
-	PEN qd_pen();
-	BRUSH qd_brush();
+	Pen qd_pen();
+	Brush qd_brush();
 }
-QuadrangleContour::QuadrangleContour(DRAW_TYPE type, POINT* points, PEN qd_pen, BRUSH qd_brush)
+QuadrangleContour::QuadrangleContour(POINT* points, Pen qd_pen)
 {
 	this->type = type;
 	for (int i = 0; i < 4; i++)
 	{
 		this->points[i] = points[i];
 	}
-	this->qd_pen = qd_pen;
-	this->qd_brush = qd_brush;
-}
-DRAW_TYPE QuadrangleContour::  GetType()
-{
-	return type;
-}
-void QuadrangleContour::SetType(DRAW_TYPE type)
-{
-	this->type = type;
+	this->pen = qd_pen;
 }
 POINT* QuadrangleContour::GetPoint()
 {
@@ -43,23 +34,14 @@ void QuadrangleContour::SetPoint(POINT* points)
 		this->points[i] = points[i];
 	}
 }
-PEN QuadrangleContour:: GetPen()
+Pen QuadrangleContour:: GetPen()
 {
-	return qd_pen;
+	return pen;
 }
 void QuadrangleContour:: SetPen(char* name, int width, COLORREF color)
 {
-	this->qd_pen = PEN(name, width, color);
+	this->pen = Pen(name, width, color);
 }
-BRUSH QuadrangleContour:: GetBrush()
-{
-	return qd_brush;
-}
-void QuadrangleContour:: SetBrush(char* name, COLORREF color)
-{
-	this->qd_brush = BRUSH(name, color);
-}
-
 
 
 int QuadrangleContour::StringToBrushHash(const char string[])
@@ -140,39 +122,35 @@ void QuadrangleContour::Draw(HDC hdc, HWND hwnd)
 	}
 	catch (ERROR error)
 	{
-		return PrintError(error);
+		return Error::PrintError(error);
 	}
 
 	//Creating pen
 	HPEN newPen;
 	try
 	{
-		newPen = CreatePen(StringToPenStyle(this->qd_pen.GetName), this->qd_pen.GetWidth, this->qd_pen.GetColor);
+		newPen = CreatePen(StringToPenStyle(pen.GetName()), pen.GetWidth(), pen.GetColor());
 	}
 	catch (ERROR error)
 	{
-		return PrintError(error);
+		return Error::PrintError(error);
 	}
 	HPEN oldPen = SelectPen(hdc, newPen);
 
-	HBRUSH newBrush;
-	HBRUSH oldBrush;
-
-
 	//Creating brush
-	newBrush = GetStockBrush(NULL_BRUSH);
-	oldBrush = SelectBrush(hdc, newBrush);
+	HBRUSH newBrush = GetStockBrush(NULL_BRUSH);
+	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
 
-	Polygon(hdc, this->GetPoint, 4);
+	Polygon(hdc, GetPoint(), 4);
 
 }
 
 void QuadrangleContour::CheckConvex()
 {
-	if (!IsPoint(this->GetPoint[0], this->GetPoint[1], this->GetPoint[2], this->GetPoint[3])
-		|| !IsPoint(this->GetPoint[1], this->GetPoint[2], this->GetPoint[3], this->GetPoint[0])
-		|| !IsPoint(this->GetPoint[2], this->GetPoint[3], this->GetPoint[0], this->GetPoint[1])
-		|| !IsPoint(this->GetPoint[3], this->GetPoint[0], this->GetPoint[1], this->GetPoint[2]))
+	if (!IsPoint(GetPoint()[0],GetPoint()[1],GetPoint()[2],GetPoint()[3])
+		|| !IsPoint(GetPoint()[1],GetPoint()[2],GetPoint()[3],GetPoint()[0])
+		|| !IsPoint(GetPoint()[2],GetPoint()[3],GetPoint()[0],GetPoint()[1])
+		|| !IsPoint(GetPoint()[3],GetPoint()[0],GetPoint()[1], GetPoint()[2]))
 	{
 		throw NOT_CONVEX;
 	}
@@ -183,7 +161,7 @@ void QuadrangleContour::CheckInFrame(HWND hwnd)
 	GetClientRect(hwnd, &rt);
 	for (int i = 0; i < 4; i++)
 	{
-		if (this->GetPoint[i].x > rt.right || this->GetPoint[i].y > rt.bottom || this->GetPoint[i].x < 0 || this->GetPoint[i].y < 0)
+		if (GetPoint()[i].x > rt.right || GetPoint()[i].y > rt.bottom || GetPoint()[i].x < 0 || GetPoint()[i].y < 0)
 		{
 			throw OUT_FRAME;
 		}

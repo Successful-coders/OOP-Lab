@@ -5,6 +5,7 @@
 #include "QdShaded.h"
 
 
+
 DRAW_TYPE StringToEnum(const char string[])
 {
 	if (strcmp(string, "CONTOUR") == 0)
@@ -90,7 +91,7 @@ void main()
 	}
 	catch (ERROR error)
 	{
-		return PrintError(error);
+		return Error::PrintError(error);
 	}
 
 	for (int i = 0; i < 4; i++)
@@ -100,91 +101,59 @@ void main()
 
 	fscanf(file, "%s", &(PenName));
 	fscanf(file, "%d", &(PenWidth));
-
 	int Red, Green, Blue;
 	fscanf(file, "%i %i %i", &Red, &Green, &Blue);
 	PenColor = RGB(Red, Green, Blue);
-
-	PEN pen;
+	Pen pen = Pen(PenName, PenWidth, PenColor);
 
 	switch (TypeDraw)
 	{
 	case CONTOUR:
 	{
-		QuadrangleContour Quad;
-		PEN pen;
-		BRUSH brush;
-		/*pen.SetName(PenName);
-		pen.SetWidth(PenWidth);
-		pen.SetColor(PenColor);
-		brush.SetColor(RGB(0, 0, 0));*/
-		pen.PEN(PenName, PenWidth, PenColor);
-		Quad.QuadrangleContour(TypeDraw, ppt, pen, brush);
+		QuadrangleContour quad = QuadrangleContour(ppt, pen);
+		quad.Draw(hdc, hwnd);
 		break;
 	}
-
 	case SHADED:
 	{
-		fscanf(file, "%s", &quad->qd_brush.name);
-
-		int Red, Green, Blue;
+		char brushName[45];
+		fscanf(file, "%s", &(brushName));
 		fscanf(file, "%i %i %i", &Red, &Green, &Blue);
-		quad->qd_brush.color = RGB(Red, Green, Blue);
+		COLORREF brushColor = RGB(Red, Green, Blue);
+		Brush brush = Brush(brushName, brushColor);
+
+		QuadrangleShaded quad = QuadrangleShaded(ppt, pen, brush);
+		quad.Draw(hdc, hwnd);
 		break;
 	}
-
 	case DONUT:
 	{
-		fscanf(file, "%s", &quad->qd_brush.name);
-
-		int Red, Green, Blue;
+		char brushName[45];
+		fscanf(file, "%s", &(brushName));
 		fscanf(file, "%i %i %i", &Red, &Green, &Blue);
-		quad->qd_brush.color = RGB(Red, Green, Blue);
+		COLORREF brushColor = RGB(Red, Green, Blue);
+		Brush brush = Brush(brushName, brushColor);
 
+		POINT pptIn[4];
 		for (int i = 0; i < 4; i++)
-			fscanf(file, "%d %d", &(quad2->points[i].x), &(quad2->points[i].y));
+		{
+			fscanf(file, "%d %d", &(pptIn[i].x), &(pptIn[i].y));
+		}
 
-		fscanf(file, "%s", &quad2->qd_pen.name);
+		fscanf(file, "%s", &(PenName));
+		fscanf(file, "%d", &(PenWidth));
+		fscanf(file, "%i %i %i", &Red, &Green, &Blue);
+		PenColor = RGB(Red, Green, Blue);
+		Pen penIn = Pen(PenName, PenWidth, PenColor);
+		
+		Brush brushIn = Brush("NULL_BRUSH");
 
-		fscanf(file, "%d", &quad2->qd_pen.width);
-
-		int Red2, Green2, Blue2;
-		fscanf(file, "%i %i %i", &Red2, &Green2, &Blue2);
-		quad2->qd_pen.color = RGB(Red2, Green2, Blue2);
-
-		memcpy(quad2->qd_brush.name, "SOLID", 11);
-		quad2->qd_brush.color = GetBkColor(hdc);
+		QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);
+		quad.Draw(hdc, hwnd);
 		break;
 	}
 	}
-
-	
 	fclose(file);
-
-	do
-	{
-		switch (quad.type)
-		{
-		case CONTOUR:
-		{
-			DrawContour(hdc, hwnd);
-
-			break;
-		}
-		case SHADED:
-		{
-
-			DrawShaded(hdc, hwnd);
-
-			break;
-		}
-		case DONUT:
-		{
-
-			DrawDonut(hdc, hwnd);
-			break;
-		}
-		}
-	} while (getch() != 27);
+	_getch();
 }
 

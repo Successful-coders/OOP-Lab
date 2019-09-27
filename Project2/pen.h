@@ -1,14 +1,14 @@
 #pragma once
 #include "QD.h"
-class PEN
+class Pen
 {
 private:
 	char name[16];
 	int width;
 	COLORREF color;
 public:
-	PEN();
-	PEN(char* name, int width, COLORREF color);
+	Pen();
+	Pen(char* name, int width, COLORREF color);
 	char* GetName();
 	void SetName(char* name);
 	int GetWidth();

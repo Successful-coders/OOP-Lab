@@ -1,13 +1,14 @@
 #pragma once
 #include "QD.h"
-class BRUSH
+class Brush
 {
 private:
 	char name[16];
 	COLORREF color;
 public:
-	BRUSH();
-	BRUSH(char* name, COLORREF color);
+	Brush();
+	Brush(const char* name);
+	Brush(char* name, COLORREF color);
 	char* GetName();
 	void SetName(char* name);
 	COLORREF GetColor();

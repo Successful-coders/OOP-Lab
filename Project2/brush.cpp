@@ -1,28 +1,32 @@
 #include "brush.h"
 
-BRUSH::BRUSH()
+Brush::Brush()
 {
 	memcpy(this->name, "BLACK_BRUSH", 16);
 	this->color = RGB(0, 0, 0);
 }
-BRUSH::BRUSH(char* name, COLORREF color)
+Brush::Brush(const char* name)
+{
+	memcpy(this->name, name, 16);
+}
+Brush::Brush(char* name, COLORREF color)
 {
 	memcpy(this->name, name, 16);
 	this->color = color;
 }
-char* BRUSH::GetName()
+char* Brush::GetName()
 {
 	return name;
 }
-void BRUSH::SetName(char* name)
+void Brush::SetName(char* name)
 {
 	memcpy(this->name, name, 16);
 }
-COLORREF BRUSH::GetColor()
+COLORREF Brush::GetColor()
 {
 	return color;
 }
-void BRUSH::SetColor(COLORREF color)
+void Brush::SetColor(COLORREF color)
 {
 	this->color = color;
 }
