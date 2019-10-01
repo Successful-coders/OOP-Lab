@@ -4,7 +4,7 @@
 #include "QdDonut.h"
 #include "QdShaded.h"
 #define up 119
-#define right 100
+#define righ 100
 #define down 115
 #define left 97
 
@@ -74,6 +74,21 @@ void PrintError(ERROR error)
 	_getch();
 }
 
+void DeleteAll(HWND hwnd, HDC hdc)
+{
+	RECT rt;
+	GetClientRect(hwnd, &rt);
+	POINT ppt[2];
+	ppt[0].x = 0;
+	ppt[0].y = 0;
+	ppt[1].x = rt.right;
+	ppt[1].y = rt.bottom;
+	HPEN newPen = CreatePen(PS_SOLID, 0, RGB(0,0,0));
+	HPEN oldPen = SelectPen(hdc, newPen);
+	HBRUSH newBrush = CreateSolidBrush(RGB(0, 0, 0));
+	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
+	Rectangle(hdc, ppt[0].x, ppt[0].y, ppt[1].x, ppt[1].y);
+}
 void main()
 {
 	setlocale(LC_ALL, "RUSSIAN");
@@ -124,12 +139,14 @@ void main()
 				{
 				case up:
 				{
+					DeleteAll(hwnd, hdc);
 					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, -20);
 					break;
 				}
-				case right:
+				case righ:
 				{
+					DeleteAll(hwnd, hdc);
 					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 20, 0);
 					break;
@@ -137,6 +154,7 @@ void main()
 
 				case down:
 				{
+					DeleteAll(hwnd, hdc);
 					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, 20);
 					break;
@@ -144,6 +162,7 @@ void main()
 
 				case left:
 				{
+					DeleteAll(hwnd, hdc);
 					//sReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, -20, 0);
 					break;
@@ -172,12 +191,14 @@ void main()
 				{
 				case up:
 				{
+					DeleteAll(hwnd, hdc);
 					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, -20);
 					break;
 				}
-				case right:
+				case righ:
 				{
+					DeleteAll(hwnd, hdc);
 					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 20, 0);
 					break;
@@ -185,6 +206,7 @@ void main()
 
 				case down:
 				{
+					DeleteAll(hwnd, hdc);
 					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, 20);
 					break;
@@ -192,6 +214,7 @@ void main()
 
 				case left:
 				{
+					DeleteAll(hwnd, hdc);
 					//sReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, -20, 0);
 					break;
@@ -233,12 +256,14 @@ void main()
 				{
 				case up:
 				{
+					DeleteAll(hwnd, hdc);
 					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, -20);
 					break;
 				}
-				case right:
+				case righ:
 				{
+					DeleteAll(hwnd, hdc);
 					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 20, 0);
 					break;
@@ -246,6 +271,7 @@ void main()
 
 				case down:
 				{
+					DeleteAll(hwnd, hdc);
 					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, 20);
 					break;
@@ -253,6 +279,7 @@ void main()
 
 				case left:
 				{
+					DeleteAll(hwnd, hdc);
 					//sReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, -20, 0);
 					break;
