@@ -21,6 +21,7 @@ public:
 	QuadrangleShaded();
 	QuadrangleShaded(POINT* points, Pen qd_pen, Brush qd_brush);
 	void Draw(HDC hdc, HWND hwnd);
+	void Move(HWND hwnd, int x, int y);
 	POINT* GetPoint();
 	void SetPoint(POINT* points);
 	Pen GetPen();

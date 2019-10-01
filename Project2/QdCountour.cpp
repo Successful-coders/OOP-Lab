@@ -22,6 +22,7 @@ QuadrangleContour::QuadrangleContour(POINT* points, Pen qd_pen)
 		this->points[i] = points[i];
 	}
 	this->pen = qd_pen;
+	
 }
 POINT* QuadrangleContour::GetPoint()
 {
@@ -141,8 +142,20 @@ void QuadrangleContour::Draw(HDC hdc, HWND hwnd)
 	HBRUSH newBrush = GetStockBrush(NULL_BRUSH);
 	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
 
-	Polygon(hdc, GetPoint(), 4);
+	Polygon(hdc, points, 4);
 
+}
+void QuadrangleContour::Move(HWND hwnd, int x, int y)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		points[i].x += x;
+		points[i].y += y;
+	}
+	//ReleaseDC(hwnd, hdc);
+	HWND newhwnd = GetConsoleWindow();
+	HDC newhdc = GetDC(hwnd);
+	Draw(newhdc, newhwnd);
 }
 
 void QuadrangleContour::CheckConvex()
@@ -161,7 +174,7 @@ void QuadrangleContour::CheckInFrame(HWND hwnd)
 	GetClientRect(hwnd, &rt);
 	for (int i = 0; i < 4; i++)
 	{
-		if (GetPoint()[i].x > rt.right || GetPoint()[i].y > rt.bottom || GetPoint()[i].x < 0 || GetPoint()[i].y < 0)
+		if (points[i].x > rt.right || points[i].y > rt.bottom || points[i].x < 0 || points[i].y < 0)
 		{
 			throw OUT_FRAME;
 		}

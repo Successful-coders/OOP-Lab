@@ -19,6 +19,7 @@ public:
 	QuadrangleContour();
 	QuadrangleContour(POINT* points, Pen qd_pen);
 	void Draw(HDC hdc, HWND hwnd);
+	void Move(HWND hwnd, int x, int y);
 	POINT* GetPoint();
 	void SetPoint(POINT* points);
 	Pen GetPen();

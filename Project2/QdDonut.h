@@ -26,6 +26,7 @@ public:
 	QuadrangleDonut();
 	QuadrangleDonut(POINT* points, POINT* pointsIn, Pen qd_pen, Pen qd_penIn, Brush qd_brush);
 	void Draw(HDC hdc, HWND hwnd);
+	void Move(HWND hwnd, int x, int y);
 	POINT* GetPoint();
 	POINT* GetPointIn();
 	void SetPoint(POINT* points);

@@ -249,3 +249,15 @@ bool QuadrangleShaded::IsPoint(POINT k1, POINT k2, POINT k3, POINT k4)
 		}
 	}
 }
+void QuadrangleShaded::Move(HWND hwnd, int x, int y)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		points[i].x += x;
+		points[i].y += y;
+	}
+	//ReleaseDC(hwnd, hdc);
+	HWND newhwnd = GetConsoleWindow();
+	HDC newhdc = GetDC(hwnd);
+	Draw(newhdc, newhwnd);
+}

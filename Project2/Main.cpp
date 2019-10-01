@@ -3,6 +3,10 @@
 #include "QdCountour.h"
 #include "QdDonut.h"
 #include "QdShaded.h"
+#define up 119
+#define right 100
+#define down 115
+#define left 97
 
 
 
@@ -105,55 +109,164 @@ void main()
 	fscanf(file, "%i %i %i", &Red, &Green, &Blue);
 	PenColor = RGB(Red, Green, Blue);
 	Pen pen = Pen(PenName, PenWidth, PenColor);
-
-	switch (TypeDraw)
+	do
 	{
-	case CONTOUR:
-	{
-		QuadrangleContour quad = QuadrangleContour(ppt, pen);
-		quad.Draw(hdc, hwnd);
-		break;
-	}
-	case SHADED:
-	{
-		char brushName[45];
-		fscanf(file, "%s", &(brushName));
-		fscanf(file, "%i %i %i", &Red, &Green, &Blue);
-		COLORREF brushColor = RGB(Red, Green, Blue);
-		Brush brush = Brush(brushName, brushColor);
-
-		QuadrangleShaded quad = QuadrangleShaded(ppt, pen, brush);
-		quad.Draw(hdc, hwnd);
-		break;
-	}
-	case DONUT:
-	{
-		char brushName[45];
-		fscanf(file, "%s", &(brushName));
-		fscanf(file, "%i %i %i", &Red, &Green, &Blue);
-		COLORREF brushColor = RGB(Red, Green, Blue);
-		Brush brush = Brush(brushName, brushColor);
-
-		POINT pptIn[4];
-		for (int i = 0; i < 4; i++)
+		switch (TypeDraw)
 		{
-			fscanf(file, "%d %d", &(pptIn[i].x), &(pptIn[i].y));
+		case CONTOUR:
+		{
+			QuadrangleContour quad = QuadrangleContour(ppt, pen);
+			quad.Draw(hdc, hwnd);
+			int codePress = _getch();
+			while (codePress != 27)
+			{
+				switch (codePress)
+				{
+				case up:
+				{
+					//ReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, 0, -20);
+					break;
+				}
+				case right:
+				{
+					//ReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, 20, 0);
+					break;
+				}
+
+				case down:
+				{
+					//ReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, 0, 20);
+					break;
+				}
+
+				case left:
+				{
+					//sReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, -20, 0);
+					break;
+				}
+
+				break;
+				}
+				codePress = _getch();
+			} 
+			break;
+		}
+		case SHADED:
+		{
+			char brushName[45];
+			fscanf(file, "%s", &(brushName));
+			fscanf(file, "%i %i %i", &Red, &Green, &Blue);
+			COLORREF brushColor = RGB(Red, Green, Blue);
+			Brush brush = Brush(brushName, brushColor);
+
+			QuadrangleShaded quad = QuadrangleShaded(ppt, pen, brush);
+			quad.Draw(hdc, hwnd);
+			int codePress = _getch();
+			while (codePress != 27)
+			{
+				switch (codePress)
+				{
+				case up:
+				{
+					//ReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, 0, -20);
+					break;
+				}
+				case right:
+				{
+					//ReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, 20, 0);
+					break;
+				}
+
+				case down:
+				{
+					//ReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, 0, 20);
+					break;
+				}
+
+				case left:
+				{
+					//sReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, -20, 0);
+					break;
+				}
+				break;
+				}
+				codePress = _getch();
+			}
+			break;
+		}
+		case DONUT:
+		{
+			char brushName[45];
+			fscanf(file, "%s", &(brushName));
+			fscanf(file, "%i %i %i", &Red, &Green, &Blue);
+			COLORREF brushColor = RGB(Red, Green, Blue);
+			Brush brush = Brush(brushName, brushColor);
+
+			POINT pptIn[4];
+			for (int i = 0; i < 4; i++)
+			{
+				fscanf(file, "%d %d", &(pptIn[i].x), &(pptIn[i].y));
+			}
+
+			char PenNameIn[16];
+			int PenWidthIn;
+			fscanf(file, "%s", &(PenNameIn));
+			fscanf(file, "%i", &(PenWidthIn));
+			fscanf(file, "%i %i %i", &Red, &Green, &Blue);
+			COLORREF PenColorIn = RGB(Red, Green, Blue);
+			Pen penIn = Pen(PenNameIn, PenWidthIn, PenColorIn);
+
+			QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);
+			quad.Draw(hdc, hwnd);
+			int codePress = _getch();
+			while (codePress != 27)
+			{
+				switch (codePress)
+				{
+				case up:
+				{
+					//ReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, 0, -20);
+					break;
+				}
+				case right:
+				{
+					//ReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, 20, 0);
+					break;
+				}
+
+				case down:
+				{
+					//ReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, 0, 20);
+					break;
+				}
+
+				case left:
+				{
+					//sReleaseDC(hwnd, hdc);
+					quad.Move(hwnd, -20, 0);
+					break;
+				}
+				break;
+				}
+				codePress = _getch();
+			}
+			break;
 		}
 
-		fscanf(file, "%s", &(PenName));
-		fscanf(file, "%d", &(PenWidth));
-		fscanf(file, "%i %i %i", &Red, &Green, &Blue);
-		PenColor = RGB(Red, Green, Blue);
-		Pen penIn = Pen(PenName, PenWidth, PenColor);
-		
-		Brush brushIn = Brush("NULL_BRUSH");
-
-		QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);
-		quad.Draw(hdc, hwnd);
-		break;
-	}
-	}
+		}
+	} while (_getch() != 27);
 	fclose(file);
-	_getch();
-}
 
+
+}
