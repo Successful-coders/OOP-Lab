@@ -302,7 +302,7 @@ void QuadrangleDonut::Save(const char* fileName)
 
 	for (int i = 0; i < 4; i++)
 	{
-		fprintf(saveFile, "%d %d\n", points[i].x, points[i].y);
+		fprintf(saveFile, "%d %d\n", pointsIn[i].x, pointsIn[i].y);
 	}
 	fprintf(saveFile, "%s\n", penIn.GetName());
 	fprintf(saveFile, "%d\n", penIn.GetWidth());

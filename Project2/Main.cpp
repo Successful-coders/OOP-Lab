@@ -77,7 +77,7 @@ void PrintError(ERROR error)
 void main()
 {
 	setlocale(LC_ALL, "RUSSIAN");
-	FILE* file = fopen("test.txt", "r");
+	FILE* file = fopen("DonatSave.txt", "r");
 	HWND hwnd = GetConsoleWindow();
 	HDC hdc = GetDC(hwnd);
 	SetBkColor(hdc, RGB(0, 0, 0));
