@@ -64,5 +64,8 @@
     <Text Include="test.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
+    <Text Include="DonatSave.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
   </ItemGroup>
 </Project>

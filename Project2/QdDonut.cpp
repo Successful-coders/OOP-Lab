@@ -174,7 +174,7 @@ int QuadrangleDonut::StringToPenStyle(const char string[])
 
 
 
-void QuadrangleDonut::Draw(HDC hdc, HWND hwnd)
+void QuadrangleDonut::Draw(HWND hwnd)
 {
 	try
 	{
@@ -199,6 +199,7 @@ void QuadrangleDonut::Draw(HDC hdc, HWND hwnd)
 	{
 		return Error::PrintError(error);
 	}
+	HDC hdc = GetDC(hwnd);
 	HPEN oldPen = SelectPen(hdc, newPen);
 
 	HBRUSH newBrush;
@@ -246,6 +247,7 @@ void QuadrangleDonut::Draw(HDC hdc, HWND hwnd)
 
 void QuadrangleDonut::Move(HWND hwnd, int x, int y)
 {
+	DeleteAll(hwnd);
 	for (int i = 0; i < 4; i++)
 	{
 		points[i].x += x;
@@ -253,10 +255,9 @@ void QuadrangleDonut::Move(HWND hwnd, int x, int y)
 		pointsIn[i].x += x;
 		pointsIn[i].y += y;
 	}
-	//ReleaseDC(hwnd, hdc);
+
 	HWND newhwnd = GetConsoleWindow();
-	HDC newhdc = GetDC(hwnd);
-	Draw(newhdc, newhwnd);
+	Draw(newhwnd);
 }
 void QuadrangleDonut::CheckConvex()
 {
@@ -268,7 +269,47 @@ void QuadrangleDonut::CheckConvex()
 		throw NOT_CONVEX;
 	}
 }
+void QuadrangleDonut::DeleteAll(HWND hwnd)
+{
+	HDC hdc = GetDC(hwnd);
+	RECT rt;
+	GetClientRect(hwnd, &rt);
+	POINT ppt[2];
+	ppt[0].x = 0;
+	ppt[0].y = 0;
+	ppt[1].x = rt.right;
+	ppt[1].y = rt.bottom;
+	HPEN newPen = CreatePen(PS_SOLID, 0, RGB(0, 0, 0));
+	HPEN oldPen = SelectPen(hdc, newPen);
+	HBRUSH newBrush = CreateSolidBrush(RGB(0, 0, 0));
+	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
+	Rectangle(hdc, ppt[0].x, ppt[0].y, ppt[1].x, ppt[1].y);
+}
+void QuadrangleDonut::Save(const char* fileName)
+{
+	FILE* saveFile = fopen(fileName, "w");
 
+	fprintf(saveFile, "%s\n", "DONUT");
+	for (int i = 0; i < 4; i++)
+	{
+		fprintf(saveFile, "%d %d\n", points[i].x, points[i].y);
+	}
+	fprintf(saveFile, "%s\n", pen.GetName());
+	fprintf(saveFile, "%d\n", pen.GetWidth());
+	fprintf(saveFile, "%d %d %d\n", GetRValue(pen.GetColor()), GetGValue(pen.GetColor()), GetBValue(pen.GetColor()));
+	fprintf(saveFile, "%s\n", brush.GetName());
+	fprintf(saveFile, "%d %d %d\n", GetRValue(brush.GetColor()), GetGValue(brush.GetColor()), GetBValue(brush.GetColor()));
+
+	for (int i = 0; i < 4; i++)
+	{
+		fprintf(saveFile, "%d %d\n", points[i].x, points[i].y);
+	}
+	fprintf(saveFile, "%s\n", penIn.GetName());
+	fprintf(saveFile, "%d\n", penIn.GetWidth());
+	fprintf(saveFile, "%d %d %d\n", GetRValue(penIn.GetColor()), GetGValue(penIn.GetColor()), GetBValue(penIn.GetColor()));
+
+	fclose(saveFile);
+}
 void QuadrangleDonut::CheckConvex2()
 {
 	if (!IsPoint(GetPointIn()[0], GetPointIn()[1], GetPointIn()[2], GetPointIn()[3])

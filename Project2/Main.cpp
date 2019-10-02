@@ -3,10 +3,10 @@
 #include "QdCountour.h"
 #include "QdDonut.h"
 #include "QdShaded.h"
-#define up 119
-#define righ 100
-#define down 115
-#define left 97
+#define UP 119
+#define RIGHT 100
+#define DOWN 115
+#define LEFT 97
 
 
 
@@ -74,21 +74,6 @@ void PrintError(ERROR error)
 	_getch();
 }
 
-void DeleteAll(HWND hwnd, HDC hdc)
-{
-	RECT rt;
-	GetClientRect(hwnd, &rt);
-	POINT ppt[2];
-	ppt[0].x = 0;
-	ppt[0].y = 0;
-	ppt[1].x = rt.right;
-	ppt[1].y = rt.bottom;
-	HPEN newPen = CreatePen(PS_SOLID, 0, RGB(0,0,0));
-	HPEN oldPen = SelectPen(hdc, newPen);
-	HBRUSH newBrush = CreateSolidBrush(RGB(0, 0, 0));
-	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
-	Rectangle(hdc, ppt[0].x, ppt[0].y, ppt[1].x, ppt[1].y);
-}
 void main()
 {
 	setlocale(LC_ALL, "RUSSIAN");
@@ -122,6 +107,7 @@ void main()
 	fscanf(file, "%d", &(PenWidth));
 	int Red, Green, Blue;
 	fscanf(file, "%i %i %i", &Red, &Green, &Blue);
+
 	PenColor = RGB(Red, Green, Blue);
 	Pen pen = Pen(PenName, PenWidth, PenColor);
 	do
@@ -130,40 +116,33 @@ void main()
 		{
 		case CONTOUR:
 		{
+			fclose(file);
 			QuadrangleContour quad = QuadrangleContour(ppt, pen);
-			quad.Draw(hdc, hwnd);
+			quad.Draw(hwnd);
 			int codePress = _getch();
 			while (codePress != 27)
 			{
 				switch (codePress)
 				{
-				case up:
+				case UP:
 				{
-					DeleteAll(hwnd, hdc);
-					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, -20);
 					break;
 				}
-				case righ:
+				case RIGHT:
 				{
-					DeleteAll(hwnd, hdc);
-					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 20, 0);
 					break;
 				}
 
-				case down:
+				case DOWN:
 				{
-					DeleteAll(hwnd, hdc);
-					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, 20);
 					break;
 				}
 
-				case left:
+				case LEFT:
 				{
-					DeleteAll(hwnd, hdc);
-					//sReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, -20, 0);
 					break;
 				}
@@ -172,6 +151,8 @@ void main()
 				}
 				codePress = _getch();
 			} 
+
+			quad.Save("ContourSave.txt");
 			break;
 		}
 		case SHADED:
@@ -179,43 +160,36 @@ void main()
 			char brushName[45];
 			fscanf(file, "%s", &(brushName));
 			fscanf(file, "%i %i %i", &Red, &Green, &Blue);
+			fclose(file);
 			COLORREF brushColor = RGB(Red, Green, Blue);
 			Brush brush = Brush(brushName, brushColor);
 
 			QuadrangleShaded quad = QuadrangleShaded(ppt, pen, brush);
-			quad.Draw(hdc, hwnd);
+			quad.Draw(hwnd);
 			int codePress = _getch();
 			while (codePress != 27)
 			{
 				switch (codePress)
 				{
-				case up:
+				case UP:
 				{
-					DeleteAll(hwnd, hdc);
-					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, -20);
 					break;
 				}
-				case righ:
+				case RIGHT:
 				{
-					DeleteAll(hwnd, hdc);
-					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 20, 0);
 					break;
 				}
 
-				case down:
+				case DOWN:
 				{
-					DeleteAll(hwnd, hdc);
-					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, 20);
 					break;
 				}
 
-				case left:
+				case LEFT:
 				{
-					DeleteAll(hwnd, hdc);
-					//sReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, -20, 0);
 					break;
 				}
@@ -223,6 +197,8 @@ void main()
 				}
 				codePress = _getch();
 			}
+
+			quad.Save("ShadedSave.txt");
 			break;
 		}
 		case DONUT:
@@ -244,43 +220,36 @@ void main()
 			fscanf(file, "%s", &(PenNameIn));
 			fscanf(file, "%i", &(PenWidthIn));
 			fscanf(file, "%i %i %i", &Red, &Green, &Blue);
+			fclose(file);
 			COLORREF PenColorIn = RGB(Red, Green, Blue);
 			Pen penIn = Pen(PenNameIn, PenWidthIn, PenColorIn);
 
 			QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);
-			quad.Draw(hdc, hwnd);
+			quad.Draw(hwnd);
 			int codePress = _getch();
 			while (codePress != 27)
 			{
 				switch (codePress)
 				{
-				case up:
+				case UP:
 				{
-					DeleteAll(hwnd, hdc);
-					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, -20);
 					break;
 				}
-				case righ:
+				case RIGHT:
 				{
-					DeleteAll(hwnd, hdc);
-					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 20, 0);
 					break;
 				}
 
-				case down:
+				case DOWN:
 				{
-					DeleteAll(hwnd, hdc);
-					//ReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, 0, 20);
 					break;
 				}
 
-				case left:
+				case LEFT:
 				{
-					DeleteAll(hwnd, hdc);
-					//sReleaseDC(hwnd, hdc);
 					quad.Move(hwnd, -20, 0);
 					break;
 				}
@@ -288,12 +257,13 @@ void main()
 				}
 				codePress = _getch();
 			}
+
+			quad.Save("DonatSave.txt");
 			break;
 		}
-
 		}
 	} while (_getch() != 27);
-	fclose(file);
+
 
 
 }
