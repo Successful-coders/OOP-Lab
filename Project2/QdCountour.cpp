@@ -114,7 +114,7 @@ int QuadrangleContour::StringToPenStyle(const char string[])
 
 
 
-void QuadrangleContour::Draw(HDC hdc, HWND hwnd)
+void QuadrangleContour::Draw(HWND hwnd)
 {
 	try
 	{
@@ -136,6 +136,7 @@ void QuadrangleContour::Draw(HDC hdc, HWND hwnd)
 	{
 		return Error::PrintError(error);
 	}
+	HDC hdc = GetDC(hwnd);
 	HPEN oldPen = SelectPen(hdc, newPen);
 
 	//Creating brush
@@ -147,17 +148,31 @@ void QuadrangleContour::Draw(HDC hdc, HWND hwnd)
 }
 void QuadrangleContour::Move(HWND hwnd, int x, int y)
 {
+	DeleteAll(hwnd);
 	for (int i = 0; i < 4; i++)
 	{
 		points[i].x += x;
 		points[i].y += y;
 	}
-	//ReleaseDC(hwnd, hdc);
-	HWND newhwnd = GetConsoleWindow();
-	HDC newhdc = GetDC(hwnd);
-	Draw(newhdc, newhwnd);
-}
 
+	HWND newhwnd = GetConsoleWindow();
+	Draw(newhwnd);
+}
+void QuadrangleContour::Save(const char* fileName)
+{
+	FILE* saveFile = fopen(fileName, "w");
+
+	fprintf(saveFile, "%s\n", "CONTOUR");
+	for (int i = 0; i < 4; i++)
+	{
+		fprintf(saveFile, "%d %d\n", points[i].x, points[i].y);
+	}
+	fprintf(saveFile, "%s\n", pen.GetName());
+	fprintf(saveFile, "%d\n", pen.GetWidth());
+	fprintf(saveFile, "%d %d %d\n", GetRValue(pen.GetColor()), GetGValue(pen.GetColor()), GetBValue(pen.GetColor()));
+
+	fclose(saveFile);
+}
 void QuadrangleContour::CheckConvex()
 {
 	if (!IsPoint(GetPoint()[0],GetPoint()[1],GetPoint()[2],GetPoint()[3])
@@ -179,6 +194,22 @@ void QuadrangleContour::CheckInFrame(HWND hwnd)
 			throw OUT_FRAME;
 		}
 	}
+}
+void QuadrangleContour::DeleteAll(HWND hwnd)
+{
+	HDC hdc = GetDC(hwnd);
+	RECT rt;
+	GetClientRect(hwnd, &rt);
+	POINT ppt[2];
+	ppt[0].x = 0;
+	ppt[0].y = 0;
+	ppt[1].x = rt.right;
+	ppt[1].y = rt.bottom;
+	HPEN newPen = CreatePen(PS_SOLID, 0, RGB(0, 0, 0));
+	HPEN oldPen = SelectPen(hdc, newPen);
+	HBRUSH newBrush = CreateSolidBrush(RGB(0, 0, 0));
+	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
+	Rectangle(hdc, ppt[0].x, ppt[0].y, ppt[1].x, ppt[1].y);
 }
 
 bool QuadrangleContour::IsPoint(POINT k1, POINT k2, POINT k3, POINT k4)

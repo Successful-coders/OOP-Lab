@@ -131,7 +131,7 @@ void main()
 		case CONTOUR:
 		{
 			QuadrangleContour quad = QuadrangleContour(ppt, pen);
-			quad.Draw(hdc, hwnd);
+			quad.Draw(hwnd);
 			int codePress = _getch();
 			while (codePress != 27)
 			{
@@ -183,7 +183,7 @@ void main()
 			Brush brush = Brush(brushName, brushColor);
 
 			QuadrangleShaded quad = QuadrangleShaded(ppt, pen, brush);
-			quad.Draw(hdc, hwnd);
+			quad.Draw(hwnd);
 			int codePress = _getch();
 			while (codePress != 27)
 			{
@@ -248,7 +248,7 @@ void main()
 			Pen penIn = Pen(PenNameIn, PenWidthIn, PenColorIn);
 
 			QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);
-			quad.Draw(hdc, hwnd);
+			quad.Draw(hwnd);
 			int codePress = _getch();
 			while (codePress != 27)
 			{

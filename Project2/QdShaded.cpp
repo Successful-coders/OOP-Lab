@@ -139,7 +139,7 @@ int QuadrangleShaded::StringToPenStyle(const char string[])
 
 
 
-void QuadrangleShaded::Draw(HDC hdc, HWND hwnd)
+void QuadrangleShaded::Draw(HWND hwnd)
 {
 	try
 	{
@@ -161,6 +161,7 @@ void QuadrangleShaded::Draw(HDC hdc, HWND hwnd)
 	{
 		return Error::PrintError(error);
 	}
+	HDC hdc = GetDC(hwnd);
 	HPEN oldPen = SelectPen(hdc, newPen);
 
 	HBRUSH newBrush;
@@ -210,7 +211,39 @@ void QuadrangleShaded::CheckInFrame(HWND hwnd)
 		}
 	}
 }
+void QuadrangleShaded::DeleteAll(HWND hwnd)
+{
+	HDC hdc = GetDC(hwnd);
+	RECT rt;
+	GetClientRect(hwnd, &rt);
+	POINT ppt[2];
+	ppt[0].x = 0;
+	ppt[0].y = 0;
+	ppt[1].x = rt.right;
+	ppt[1].y = rt.bottom;
+	HPEN newPen = CreatePen(PS_SOLID, 0, RGB(0, 0, 0));
+	HPEN oldPen = SelectPen(hdc, newPen);
+	HBRUSH newBrush = CreateSolidBrush(RGB(0, 0, 0));
+	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
+	Rectangle(hdc, ppt[0].x, ppt[0].y, ppt[1].x, ppt[1].y);
+}
+void QuadrangleShaded::Save(const char* fileName)
+{
+	FILE* saveFile = fopen(fileName, "w");
 
+	fprintf(saveFile, "%s\n", "SHADED");
+	for (int i = 0; i < 4; i++)
+	{
+		fprintf(saveFile, "%d %d\n", points[i].x, points[i].y);
+	}
+	fprintf(saveFile, "%s\n", pen.GetName());
+	fprintf(saveFile, "%d\n", pen.GetWidth());
+	fprintf(saveFile, "%d %d %d\n", GetRValue(pen.GetColor()), GetGValue(pen.GetColor()), GetBValue(pen.GetColor()));
+	fprintf(saveFile, "%s\n", brush.GetName());
+	fprintf(saveFile, "%d %d %d\n", GetRValue(brush.GetColor()), GetGValue(brush.GetColor()), GetBValue(brush.GetColor()));
+
+	fclose(saveFile);
+}
 bool QuadrangleShaded::IsPoint(POINT k1, POINT k2, POINT k3, POINT k4)
 {
 	if (k1.x - k2.x)
@@ -251,13 +284,13 @@ bool QuadrangleShaded::IsPoint(POINT k1, POINT k2, POINT k3, POINT k4)
 }
 void QuadrangleShaded::Move(HWND hwnd, int x, int y)
 {
+	DeleteAll(hwnd);
 	for (int i = 0; i < 4; i++)
 	{
 		points[i].x += x;
 		points[i].y += y;
 	}
-	//ReleaseDC(hwnd, hdc);
+
 	HWND newhwnd = GetConsoleWindow();
-	HDC newhdc = GetDC(hwnd);
-	Draw(newhdc, newhwnd);
+	Draw(newhwnd);
 }
