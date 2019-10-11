@@ -3,7 +3,6 @@
 #include "QdCountour.h"
 #include "QdDonut.h"
 #include "QdShaded.h"
-#include "DoubleLinkedList.h"
 #define UP 119
 #define RIGHT 100
 #define DOWN 115

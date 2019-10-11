@@ -11,6 +11,7 @@
 #include "pen.h"
 #include "brush.h"
 #include "Error.h"
+#include "DoubleLinkedList.h"
 
 using namespace std;
 

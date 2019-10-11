@@ -4,7 +4,7 @@
 #include <utility>
 
 template <typename T>
-class DoubleLinkedList
+class DoubleLinkedList 
 {
 	struct node
 	{
