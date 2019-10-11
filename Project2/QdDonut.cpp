@@ -1,7 +1,6 @@
 #include "QdDonut.h"
 QuadrangleDonut::QuadrangleDonut()
 {
-	this->type = CONTOUR;
 	this->points[0].x = 50;
 	this->points[0].y = 50;
 	this->points[0].x = 100;
@@ -25,7 +24,6 @@ QuadrangleDonut::QuadrangleDonut()
 }
 QuadrangleDonut::QuadrangleDonut(POINT* points, POINT* pointsIn, Pen qd_pen, Pen qd_penIn, Brush qd_brush)
 {
-	this->type = type;
 	for (int i = 0; i < 4; i++)
 	{
 		this->points[i] = points[i];

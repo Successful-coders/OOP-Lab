@@ -3,6 +3,7 @@
 #include "QdCountour.h"
 #include "QdDonut.h"
 #include "QdShaded.h"
+#include "DoubleLinkedList.h"
 #define UP 119
 #define RIGHT 100
 #define DOWN 115
@@ -110,6 +111,7 @@ void main()
 
 	PenColor = RGB(Red, Green, Blue);
 	Pen pen = Pen(PenName, PenWidth, PenColor);
+
 	do
 	{
 		switch (TypeDraw)
@@ -118,6 +120,9 @@ void main()
 		{
 			fclose(file);
 			QuadrangleContour quad = QuadrangleContour(ppt, pen);
+			DoubleLinkedList<QuadrangleContour> list = DoubleLinkedList<QuadrangleContour>();
+			list.PushElement(quad);
+			list.PushElement(quad);
 			quad.Draw(hwnd);
 			int codePress = _getch();
 			while (codePress != 27)

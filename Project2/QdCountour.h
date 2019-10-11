@@ -5,7 +5,6 @@ using namespace std;
 class QuadrangleContour // Check in set
 {
 private:
-	DRAW_TYPE type;
 	POINT points[4];
 	Pen pen;
 	HWND hwnd;

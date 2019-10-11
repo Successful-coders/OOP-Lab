@@ -36,6 +36,9 @@
     <ClCompile Include="QdDonut.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="DoubleLinkedList.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="QD.h">
@@ -59,12 +62,18 @@
     <ClInclude Include="Error.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="DoubleLinkedList.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
     <Text Include="DonatSave.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="ContourSave.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
   </ItemGroup>

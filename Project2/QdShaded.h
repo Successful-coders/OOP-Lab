@@ -5,7 +5,6 @@ using namespace std;
 class QuadrangleShaded
 {
 private:
-	DRAW_TYPE type;
 	POINT points[4];
 	Pen pen;
 	Brush brush;

@@ -5,7 +5,6 @@
 class QuadrangleDonut
 {
 private:
-	DRAW_TYPE type;
 	POINT points[4];
 	POINT pointsIn[4];
 	Pen pen;

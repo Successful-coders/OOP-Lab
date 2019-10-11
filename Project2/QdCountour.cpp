@@ -2,7 +2,6 @@
 using namespace std;
 QuadrangleContour::QuadrangleContour()
 {
-	this->type = CONTOUR;
 	this->points[0].x = 50;
 	this->points[0].y = 50;
 	this->points[0].x = 100;
@@ -16,7 +15,6 @@ QuadrangleContour::QuadrangleContour()
 }
 QuadrangleContour::QuadrangleContour(POINT* points, Pen qd_pen)
 {
-	this->type = type;
 	for (int i = 0; i < 4; i++)
 	{
 		this->points[i] = points[i];

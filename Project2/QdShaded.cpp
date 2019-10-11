@@ -1,7 +1,6 @@
 #include "QdShaded.h"
 QuadrangleShaded::QuadrangleShaded()
 {
-	this->type = CONTOUR;
 	this->points[0].x = 50;
 	this->points[0].y = 50;
 	this->points[0].x = 100;
@@ -15,7 +14,6 @@ QuadrangleShaded::QuadrangleShaded()
 }
 QuadrangleShaded::QuadrangleShaded(POINT* points, Pen qd_pen, Brush qd_brush)
 {
-	this->type = type;
 	for (int i = 0; i < 4; i++)
 	{
 		this->points[i] = points[i];
