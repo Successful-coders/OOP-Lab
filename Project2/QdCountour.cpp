@@ -1,4 +1,5 @@
 #include "QdCountour.h"
+
 using namespace std;
 QuadrangleContour::QuadrangleContour()
 {

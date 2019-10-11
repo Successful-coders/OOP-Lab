@@ -1,4 +1,3 @@
-//QD.h
 #pragma once
 #include <windows.h>
 #include <windowsx.h>
@@ -8,12 +7,6 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <string.h>
-#include "pen.h"
-#include "brush.h"
-#include "Error.h"
-#include "DoubleLinkedList.h"
-
-using namespace std;
 
 enum DRAW_TYPE
 {
@@ -21,6 +14,3 @@ enum DRAW_TYPE
 	SHADED,
 	DONUT
 };
-
-
-

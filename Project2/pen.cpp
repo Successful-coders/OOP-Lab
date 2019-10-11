@@ -1,4 +1,3 @@
-#pragma once
 #include "pen.h"
 
 Pen::Pen()

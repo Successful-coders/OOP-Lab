@@ -1,5 +1,7 @@
 #pragma once
-#include "QD.h"
+#include <windows.h>
+#include <windowsx.h>
+
 class Pen
 {
 private:

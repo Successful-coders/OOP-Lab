@@ -1,6 +1,20 @@
 #pragma once
-#include"QD.h"
+#include <windows.h>
+#include <windowsx.h>
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
+#include <conio.h>
+#include <string.h>
+
+#include "brush.h"
+#include "pen.h"
+#include "DrawTypeEnum.h"
+#include "Error.h"
+
 using namespace std;
+
 
 class QuadrangleShaded
 {

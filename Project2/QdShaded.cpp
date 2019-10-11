@@ -1,4 +1,5 @@
 #include "QdShaded.h"
+
 QuadrangleShaded::QuadrangleShaded()
 {
 	this->points[0].x = 50;
