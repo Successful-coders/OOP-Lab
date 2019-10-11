@@ -1,14 +1,24 @@
 //Main.cpp
-#include "QD.h"
+#include <windows.h>
+#include <windowsx.h>
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
+#include <conio.h>
+#include <string.h>
+
+#include "DoubleLinkedList.h"
 #include "QdCountour.h"
 #include "QdDonut.h"
 #include "QdShaded.h"
-#include "DoubleLinkedList.h"
+
 #define UP 119
 #define RIGHT 100
 #define DOWN 115
 #define LEFT 97
 
+using namespace std;
 
 
 DRAW_TYPE StringToEnum(const char string[])
@@ -120,9 +130,9 @@ void main()
 		{
 			fclose(file);
 			QuadrangleContour quad = QuadrangleContour(ppt, pen);
-			DoubleLinkedList<QuadrangleContour> list = DoubleLinkedList<QuadrangleContour>();
-			list.PushElement(quad);
-			list.PushElement(quad);
+			DoubleLinkedList<int> list = DoubleLinkedList<int>();
+			list.PushElement(5);
+			list.PushElement(6);
 			quad.Draw(hwnd);
 			int codePress = _getch();
 			while (codePress != 27)

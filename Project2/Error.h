@@ -1,6 +1,15 @@
 #pragma once
-#include "QD.h"
+#include <windows.h>
+#include <windowsx.h>
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
+#include <conio.h>
+#include <string.h>
+
 #undef ERROR
+
 enum ERROR
 {
 	INCORRECT_DRAW_TYPE,
