@@ -10,7 +10,7 @@ public:
 
 	T GetElement(int index);
 	void PushElement(T elemnent);
-	T PopElement();
+	void PopElement();
 
 private:
 	struct node
@@ -29,8 +29,8 @@ DoubleLinkedList <T> ::DoubleLinkedList()
 {
 	head = new node;
 	head->value = T();
-	head->next = head;
-	head->prev = head;
+	head->next = NULL;
+	head->prev = NULL;
 }
 
 template <class T>
@@ -47,32 +47,38 @@ DoubleLinkedList <T> ::~DoubleLinkedList()
 template <class T>
 void DoubleLinkedList <T> ::PushElement(T element)
 {
-	if (head->next != head->prev)
-	{
-		node* lastElement = head->prev;
-
-		lastElement->next = new node;
-		lastElement->next->value = element;
-		lastElement->next->next = head;
-		lastElement->next->prev = lastElement;
-	}
-	else
-	{
-		head->next = new node;
-		head->next->value = element;
-		head->next->next = head;
-		head->next->prev = head;
-	}
+	node* temp, * p;
+	temp = new node;
+	p = head->next;
+	head->next = temp;
+	temp->value = element;
+	temp->next = p;
+	temp->prev = head;
+	if (p != NULL)
+		p->prev = temp;
+	head = temp;
 }
 
 template <class T>
 T DoubleLinkedList <T> ::GetElement(int index)
 {
-
+	for (int i = 0; i != index - 1 && head->prev->prev != NULL; i++)
+	{
+		head = head->prev;
+	}
+	return head->value;
 }
 
 template <class T>
-T DoubleLinkedList <T> ::PopElement()
+void DoubleLinkedList <T> ::PopElement()
 {
-
+	node* prev, * next;
+	prev = head->prev;
+	next = head->next;
+	if (prev != NULL)
+		prev->next = head->next;
+	if (next != NULL)
+		next->prev = head->prev;
+	free(head);
+	head = prev;
 }

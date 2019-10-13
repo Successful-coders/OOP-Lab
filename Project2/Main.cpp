@@ -133,6 +133,8 @@ void main()
 			DoubleLinkedList<int> list = DoubleLinkedList<int>();
 			list.PushElement(5);
 			list.PushElement(6);
+			list.GetElement(1);
+			list.PopElement();
 			quad.Draw(hwnd);
 			int codePress = _getch();
 			while (codePress != 27)
