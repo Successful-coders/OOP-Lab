@@ -11,6 +11,7 @@ public:
 	T GetElement(int index);
 	void PushElement(T elemnent);
 	void PopElement();
+	int GetLength();
 
 private:
 	struct node
@@ -21,12 +22,14 @@ private:
 	};
 
 	node* head;
+	int length;
 };
 
 
 template <class T>
 DoubleLinkedList <T> ::DoubleLinkedList()
 {
+	length = 0;
 	head = new node;
 	head->value = T();
 	head->next = NULL;
@@ -47,6 +50,8 @@ DoubleLinkedList <T> ::~DoubleLinkedList()
 template <class T>
 void DoubleLinkedList <T> ::PushElement(T element)
 {
+	length++;
+
 	node* temp, * p;
 	temp = new node;
 	p = head->next;
@@ -81,4 +86,10 @@ void DoubleLinkedList <T> ::PopElement()
 		next->prev = head->prev;
 	free(head);
 	head = prev;
+}
+
+template<class T>
+inline int DoubleLinkedList<T>::GetLength()
+{
+	return this->length;
 }
