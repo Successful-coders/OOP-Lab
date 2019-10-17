@@ -39,11 +39,11 @@ DoubleLinkedList <T> ::DoubleLinkedList()
 template <class T>
 DoubleLinkedList <T> ::~DoubleLinkedList()
 {
-	while (head != NULL)
+	while (head->prev!= NULL&& head->next!=NULL)
 	{
 		node* deletedNode = head;
 		head = head->next;
-		delete deletedNode;
+		free (deletedNode);
 	}
 }
 
@@ -67,11 +67,14 @@ void DoubleLinkedList <T> ::PushElement(T element)
 template <class T>
 T DoubleLinkedList <T> ::GetElement(int index)
 {
-	for (int i = 0; i != index - 1 && head->prev->prev != NULL; i++)
+	node *savehead = head;
+	if (this->length == 1)
+		return head->value;
+	for (int i = 0; i != index && savehead->prev->prev != NULL ; i++)
 	{
-		head = head->prev;
+		savehead = savehead->prev;
 	}
-	return head->value;
+	return savehead->value;
 }
 
 template <class T>

@@ -127,7 +127,32 @@ template <class Quad>
 		 printf_s("R: %d, G: %d, B: %d.\n", GetRValue(penColor), GetGValue(penColor), GetBValue(penColor));
 	 }
  }
+ void DeleteAll(HWND hwnd, HDC hdc)
+ {
+	 RECT rt;
+	 GetClientRect(hwnd, &rt);
+	 POINT ppt[2];
+	 ppt[0].x = 0;
+	 ppt[0].y = 0;
+	 ppt[1].x = rt.right;
+	 ppt[1].y = rt.bottom;
+	 HPEN newPen = CreatePen(PS_SOLID, 0, RGB(0, 0, 0));
+	 HPEN oldPen = SelectPen(hdc, newPen);
+	 HBRUSH newBrush = CreateSolidBrush(RGB(0, 0, 0));
+	 HBRUSH oldBrush = SelectBrush(hdc, newBrush);
+	 Rectangle(hdc, ppt[0].x, ppt[0].y, ppt[1].x, ppt[1].y);
+ }
 
+ template<class T>
+ void PrintColor(T list)
+ {
+	 for (int i = 0; i < list.GetLength(); i++)
+	 {
+		 COLORREF penColor = list.GetElement(i).GetPen().GetColor();
+
+		 printf_s("R: %d, G: %d, B: %d.\n", GetRValue(penColor), GetGValue(penColor), GetBValue(penColor));
+	 }
+ }
 void main()
 {
 	setlocale(LC_ALL, "RUSSIAN");
@@ -233,30 +258,69 @@ void main()
 		}
 	}
 	fclose(file);
-
-	for (int i = 0; i < 4; i++)
+	
+	if (listContour.GetLength() != 0)
 	{
-		COLORREF penColor = listContour.GetElement(i).GetPen().GetColor();
+		PrintColor(listContour);
+		printf("Enter color:\n");
+		int red, green, blue;
+		scanf_s("%d %d %d", &red, &green, &blue);
 
-		printf_s("R: %d, G: %d, B: %d.\n", GetRValue(penColor), GetGValue(penColor), GetBValue(penColor));
+		QuadrangleContour foundContourQuad;
+		bool isFind = FindByPenColor<QuadrangleContour>(listContour, &foundContourQuad, RGB(red, green, blue));
+		if (isFind)
+		{
+			printf("Quad was found");
+			DeleteAll(hwnd, hdc);
+			foundContourQuad.Draw(hwnd);
+		}
+		else
+		{
+			printf("Quad was not found");
+		}
+	}
+	if (listShaded.GetLength() != 0)
+	{
+		PrintColor(listShaded);
+		printf("Enter color:\n");
+		int red, green, blue;
+		scanf_s("%d %d %d", &red, &green, &blue);
+
+		QuadrangleContour foundContourQuad;
+		bool isFind = FindByPenColor<QuadrangleShaded>(listShaded, &foundContourQuad, RGB(red, green, blue));
+		if (isFind)
+		{
+			printf("Quad was found");
+			DeleteAll(hwnd, hdc);
+			foundContourQuad.Draw(hwnd);
+		}
+		else
+		{
+			printf("Quad was not found");
+		}
+	}
+	if (listDonut.GetLength() != 0)
+	{
+		PrintColor(listDonut);
+
+		printf("Enter color:\n");
+		int red, green, blue;
+		scanf_s("%d %d %d", &red, &green, &blue);
+
+		QuadrangleContour foundContourQuad;
+		bool isFind = FindByPenColor<QuadrangleDonut>(listDonut, &foundContourQuad, RGB(red, green, blue));
+		if (isFind)
+		{
+			printf("Quad was found");
+			DeleteAll(hwnd, hdc);
+			foundContourQuad.Draw(hwnd);
+		}
+		else
+		{
+			printf("Quad was not found");
+		}
 	}
 
-	printf("Enter color:\n");
-	int red, green, blue;
-	scanf_s("%d %d %d", &red, &green, &blue);
-
-	QuadrangleContour foundContourQuad;
-	bool isFind = FindByPenColor<QuadrangleContour>(listContour, &foundContourQuad, RGB(red, green, blue));
-
-	if (isFind)
-	{
-		printf("Quad was found");
-		foundContourQuad.Draw(hwnd);
-	}
-	else
-	{
-		printf("Quad was not found");
-	}
 
 	_getch();
 }
