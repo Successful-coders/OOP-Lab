@@ -10,7 +10,7 @@ public:
 
 	T GetElement(int index);
 	void PushElement(T elemnent);
-	void PopElement();
+	void DeleteElement(int indexs);
 	int GetLength();
 
 private:
@@ -78,17 +78,22 @@ T DoubleLinkedList <T> ::GetElement(int index)
 }
 
 template <class T>
-void DoubleLinkedList <T> ::PopElement()
+void DoubleLinkedList <T> ::DeleteElement(int index)
 {
+	node* savehead = head;
+	for (int i = 0; i != index && savehead->prev->prev != NULL; i++)
+	{
+		savehead = savehead->prev;
+	}
 	node* prev, * next;
-	prev = head->prev;
-	next = head->next;
+	prev = savehead->prev;
+	next = savehead->next;
 	if (prev != NULL)
-		prev->next = head->next;
+		prev->next = savehead->next;
 	if (next != NULL)
-		next->prev = head->prev;
-	free(head);
-	head = prev;
+		next->prev = savehead->prev;
+	free(savehead);
+	savehead = prev;
 }
 
 template<class T>
