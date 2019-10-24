@@ -44,7 +44,7 @@ public:
 	POINT* GetPointIn();
 	void SetPoint(POINT* points);
 	void SetPointIn(POINT* points);
-	void Save(const char* fileName);
+	void SaveQuad(FILE* saveFile);
 	Pen GetPen();
 	void SetPen(char* name, int width, COLORREF color);
 	Pen GetPenIn();

@@ -76,5 +76,11 @@
     <Text Include="listShaded.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
+    <Text Include="listContour.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="listDonut.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
   </ItemGroup>
 </Project>

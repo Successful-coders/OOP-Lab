@@ -226,9 +226,9 @@ void QuadrangleShaded::DeleteAll(HWND hwnd)
 	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
 	Rectangle(hdc, ppt[0].x, ppt[0].y, ppt[1].x, ppt[1].y);
 }
-void QuadrangleShaded::Save(const char* fileName)
+void QuadrangleShaded::SaveQuad(FILE* saveFile)
 {
-	FILE* saveFile = fopen(fileName, "w");
+	
 
 	fprintf(saveFile, "%s\n", "SHADED");
 	for (int i = 0; i < 4; i++)
@@ -241,7 +241,7 @@ void QuadrangleShaded::Save(const char* fileName)
 	fprintf(saveFile, "%s\n", brush.GetName());
 	fprintf(saveFile, "%d %d %d\n", GetRValue(brush.GetColor()), GetGValue(brush.GetColor()), GetBValue(brush.GetColor()));
 
-	fclose(saveFile);
+
 }
 bool QuadrangleShaded::IsPoint(POINT k1, POINT k2, POINT k3, POINT k4)
 {

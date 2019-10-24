@@ -27,7 +27,7 @@ private:
 
 
 template <class T>
-DoubleLinkedList <T> ::DoubleLinkedList()
+DoubleLinkedList <T> ::DoubleLinkedList()//конструктор
 {
 	length = 0;
 	head = new node;
@@ -37,7 +37,7 @@ DoubleLinkedList <T> ::DoubleLinkedList()
 }
 
 template <class T>
-DoubleLinkedList <T> ::~DoubleLinkedList()
+DoubleLinkedList <T> ::~DoubleLinkedList()//деструктор
 {
 	while (head->prev!= NULL&& head->next!=NULL)
 	{
@@ -48,7 +48,7 @@ DoubleLinkedList <T> ::~DoubleLinkedList()
 }
 
 template <class T>
-void DoubleLinkedList <T> ::PushElement(T element)
+void DoubleLinkedList <T> ::PushElement(T element)//включение элемента в список
 {
 	length++;
 
@@ -65,7 +65,7 @@ void DoubleLinkedList <T> ::PushElement(T element)
 }
 
 template <class T>
-T DoubleLinkedList <T> ::GetElement(int index)
+T DoubleLinkedList <T> ::GetElement(int index)//взятие элемента по индексу
 {
 	node *savehead = head;
 	if (this->length == 1)
@@ -78,7 +78,7 @@ T DoubleLinkedList <T> ::GetElement(int index)
 }
 
 template <class T>
-void DoubleLinkedList <T> ::DeleteElement(int index)
+void DoubleLinkedList <T> ::DeleteElement(int index)// удаление элемента 
 {
 	node* savehead = head;
 	for (int i = 0; i != index && savehead->prev->prev != NULL; i++)
@@ -97,7 +97,7 @@ void DoubleLinkedList <T> ::DeleteElement(int index)
 }
 
 template<class T>
-inline int DoubleLinkedList<T>::GetLength()
+inline int DoubleLinkedList<T>::GetLength()//взятие длины списка
 {
 	return this->length;
 }

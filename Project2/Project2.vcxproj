@@ -136,6 +136,8 @@
   <ItemGroup>
     <Text Include="ContourSave.txt" />
     <Text Include="DonatSave.txt" />
+    <Text Include="listContour.txt" />
+    <Text Include="listDonut.txt" />
     <Text Include="listShaded.txt" />
     <Text Include="test.txt" />
   </ItemGroup>

@@ -31,7 +31,7 @@ private:
 public:
 	QuadrangleContour();
 	QuadrangleContour(POINT* points, Pen qd_pen);
-	void Save(const char* fileName);
+	void SaveQuad(FILE *saveFile);
 	void Draw(HWND hwnd);
 	void Move(HWND hwnd, int x, int y);
 	POINT* GetPoint();

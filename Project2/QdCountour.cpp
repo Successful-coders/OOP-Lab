@@ -157,9 +157,9 @@ void QuadrangleContour::Move(HWND hwnd, int x, int y)
 	HWND newhwnd = GetConsoleWindow();
 	Draw(newhwnd);
 }
-void QuadrangleContour::Save(const char* fileName)
+
+void QuadrangleContour::SaveQuad(FILE *saveFile)
 {
-	FILE* saveFile = fopen(fileName, "w");
 
 	fprintf(saveFile, "%s\n", "CONTOUR");
 	for (int i = 0; i < 4; i++)
@@ -170,8 +170,8 @@ void QuadrangleContour::Save(const char* fileName)
 	fprintf(saveFile, "%d\n", pen.GetWidth());
 	fprintf(saveFile, "%d %d %d\n", GetRValue(pen.GetColor()), GetGValue(pen.GetColor()), GetBValue(pen.GetColor()));
 
-	fclose(saveFile);
 }
+
 void QuadrangleContour::CheckConvex()
 {
 	if (!IsPoint(GetPoint()[0],GetPoint()[1],GetPoint()[2],GetPoint()[3])

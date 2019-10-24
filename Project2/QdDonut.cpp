@@ -283,9 +283,9 @@ void QuadrangleDonut::DeleteAll(HWND hwnd)
 	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
 	Rectangle(hdc, ppt[0].x, ppt[0].y, ppt[1].x, ppt[1].y);
 }
-void QuadrangleDonut::Save(const char* fileName)
+void QuadrangleDonut::SaveQuad(FILE* saveFile)
 {
-	FILE* saveFile = fopen(fileName, "w");
+	
 
 	fprintf(saveFile, "%s\n", "DONUT");
 	for (int i = 0; i < 4; i++)
@@ -306,7 +306,7 @@ void QuadrangleDonut::Save(const char* fileName)
 	fprintf(saveFile, "%d\n", penIn.GetWidth());
 	fprintf(saveFile, "%d %d %d\n", GetRValue(penIn.GetColor()), GetGValue(penIn.GetColor()), GetBValue(penIn.GetColor()));
 
-	fclose(saveFile);
+	
 }
 void QuadrangleDonut::CheckConvex2()
 {

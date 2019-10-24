@@ -39,7 +39,7 @@ public:
 	void SetPoint(POINT* points);
 	Pen GetPen();
 	void SetPen(char* name, int width, COLORREF color);
-	void Save(const char* fileName);
+	void SaveQuad(FILE* saveFile);
 	Brush GetBrush();
 	void SetBrush(char* name, COLORREF color);
 };

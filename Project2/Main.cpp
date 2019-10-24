@@ -120,21 +120,27 @@ template <class Quad>
 }
 
  template <class Quad>
- void SaveAll(DoubleLinkedList<Quad> list, const char *fileName)
+ void SaveAllReverse(DoubleLinkedList<Quad> list, const char *fileName)
  {
+	 FILE* saveFile = fopen(fileName, "w");
 	 for (int i = 0; i < list.GetLength(); i++)
 	 {
-		 list.GetElement(i).Save(fileName);
+		 list.GetElement(i).SaveQuad(saveFile);
+		 fprintf(saveFile,"\n");
 	 }
+	 fclose(saveFile);
  }
 
  template <class Quad>
- void SaveAllReverse(DoubleLinkedList<Quad> list, const char* fileName)
+ void SaveAll(DoubleLinkedList<Quad> list, const char* fileName)
  {
+	 FILE* saveFile = fopen(fileName, "w");
 	 for (int i = list.GetLength() - 1; i >= 0; i++)
 	 {
-		 list.GetElement(i).Save(fileName);
+		 list.GetElement(i).SaveQuad(saveFile);
+		 fprintf(saveFile, "\n");
 	 }
+	 fclose(saveFile);
  }
 
  template <class QuadPrint>
@@ -147,6 +153,7 @@ template <class Quad>
 		 cout <<("R: %d, G: %d, B: %d.\n", GetRValue(penColor), GetGValue(penColor), GetBValue(penColor));
 	 }
  }
+
  void DeleteAll(HWND hwnd, HDC hdc)
  {
 	 RECT rt;
@@ -173,10 +180,10 @@ template <class Quad>
 		 printf_s("R: %d, G: %d, B: %d.\n", GetRValue(penColor), GetGValue(penColor), GetBValue(penColor));
 	 }
  }
+
  void main()
  {
 	 setlocale(LC_ALL, "RUSSIAN");
-	// FILE* file = fopen("test.txt", "r");
 	 ifstream fin("test.txt");
 	 HWND hwnd = GetConsoleWindow();
 	 HDC hdc = GetDC(hwnd);
@@ -350,6 +357,13 @@ template <class Quad>
 	 SaveAll<QuadrangleShaded>(listShaded, nameShaded);
 	 const char* nameDonut = "listDonut.txt";
 	 SaveAll<QuadrangleDonut>(listDonut, nameDonut);
+
+	 const char* name1 = "listContourReverse.txt";
+	 SaveAllReverse<QuadrangleContour>(listContour, name);
+	 const char* nameShaded1 = "listShadedReverse.txt";
+	 SaveAllReverse<QuadrangleShaded>(listShaded, nameShaded1);
+	 const char* nameDonut1 = "listDonutReverse.txt";
+	 SaveAllReverse<QuadrangleDonut>(listDonut, nameDonut1);
 
 	 _getch();
  }
