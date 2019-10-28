@@ -14,11 +14,13 @@
 #include "Error.h"
 
 using namespace std;
-
-
-class QuadrangleContour // Check in set
+class Figure
 {
-private:
+public:
+	Figure();
+	Figure(POINT* points, Pen qd_pen);
+	virtual void Draw(HWND hwnd);
+protected:
 	POINT points[4];
 	Pen pen;
 	HWND hwnd;
@@ -26,15 +28,4 @@ private:
 	void CheckConvex();
 	void CheckInFrame(HWND hwnd);
 	bool IsPoint(POINT k1, POINT k2, POINT k3, POINT k4);
-	void DeleteAll(HWND hwnd);
-public:
-	QuadrangleContour();
-	QuadrangleContour(POINT* points, Pen qd_pen);
-	void SaveQuad(FILE *saveFile);
-	void Draw(HWND hwnd);
-	void Move(HWND hwnd, int x, int y);
-	POINT* GetPoint();
-	void SetPoint(POINT* points);
-	Pen GetPen();
-	void SetPen(char* name, int width, COLORREF color);
 };

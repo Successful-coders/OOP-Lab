@@ -44,37 +44,7 @@ void QuadrangleContour:: SetPen(char* name, int width, COLORREF color)
 }
 
 
-int QuadrangleContour::StringToBrushHash(const char string[])
-{
-	if (strcmp(string, "HS_BDIAGONAL") == 0)
-	{
-		return HS_BDIAGONAL;
-	}
-	else if (strcmp(string, "HS_CROSS") == 0)
-	{
-		return HS_CROSS;
-	}
-	else if (strcmp(string, "HS_DIAGCROSS") == 0)
-	{
-		return HS_DIAGCROSS;
-	}
-	else if (strcmp(string, "HS_FDIAGONAL") == 0)
-	{
-		return HS_FDIAGONAL;
-	}
-	else if (strcmp(string, "HS_HORIZONTAL") == 0)
-	{
-		return HS_HORIZONTAL;
-	}
-	else if (strcmp(string, "HS_VERTICAL") == 0)
-	{
-		return HS_VERTICAL;
-	}
-	else
-	{
-		throw INCORRECT_BRUSH;
-	}
-}
+
 int QuadrangleContour::StringToPenStyle(const char string[])
 {
 	if (strcmp(string, "PS_SOLID") == 0)

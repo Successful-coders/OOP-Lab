@@ -128,6 +128,7 @@
     <ClInclude Include="DrawTypeEnum.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="DoubleLinkedList.h" />
+    <ClInclude Include="Figure.h" />
     <ClInclude Include="pen.h" />
     <ClInclude Include="QdCountour.h" />
     <ClInclude Include="QdDonut.h" />
