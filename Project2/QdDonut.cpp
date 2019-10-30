@@ -283,7 +283,7 @@ void QuadrangleDonut::DeleteAll(HWND hwnd)
 	HBRUSH oldBrush = SelectBrush(hdc, newBrush);
 	Rectangle(hdc, ppt[0].x, ppt[0].y, ppt[1].x, ppt[1].y);
 }
-void QuadrangleDonut::SaveQuad(FILE* saveFile)
+void QuadrangleDonut::Save(FILE* saveFile)
 {
 	
 

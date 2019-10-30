@@ -10,7 +10,7 @@
 #include <fstream>
 
 #include "DoubleLinkedList.h"
-#include "QdCountour.h"
+#include "QdContour.h"
 #include "QdDonut.h"
 #include "QdShaded.h"
 
@@ -41,7 +41,6 @@ DRAW_TYPE StringToEnum(const char string[])
 		throw INCORRECT_DRAW_TYPE;
 	}
 }
-
 void PrintError(ERROR error)
 {
 	switch (error)
@@ -137,7 +136,7 @@ template <class Quad>
 	 FILE* saveFile = fopen(fileName, "w");
 	 for (int i = list.GetLength() - 1; i >= 0; i++)
 	 {
-		 list.GetElement(i).SaveQuad(saveFile);
+		 list.GetElement(i).Save(saveFile);
 		 fprintf(saveFile, "\n");
 	 }
 	 fclose(saveFile);
@@ -195,9 +194,7 @@ template <class Quad>
 	 COLORREF PenColor;
 	 DRAW_TYPE TypeDraw;
 	 char type[15];
-	 DoubleLinkedList<QuadrangleContour> listContour = DoubleLinkedList<QuadrangleContour>();
-	 DoubleLinkedList<QuadrangleShaded> listShaded = DoubleLinkedList<QuadrangleShaded>();
-	 DoubleLinkedList<QuadrangleDonut> listDonut = DoubleLinkedList<QuadrangleDonut>();
+	 DoubleLinkedList<QuadrangleContour> listQuad = DoubleLinkedList<QuadrangleContour>();
 
 	 while (!fin.eof())
 	 {
@@ -224,60 +221,61 @@ template <class Quad>
 		 PenColor = RGB(Red, Green, Blue);
 		 Pen pen = Pen(PenName, PenWidth, PenColor);
 
+		 QuadrangleContour quad;
 		 switch (TypeDraw)
 		 {
-		 case CONTOUR:
-		 {
-			 QuadrangleContour quad = QuadrangleContour(ppt, pen);
-
-			 listContour.PushElement(quad);
-			 
-			 break;
-		 }
-		 case SHADED:
-		 {
-			 char brushName[45];
-			 fin >> (brushName);
-			 fin >> Red >> Green >> Blue;
-
-			 COLORREF brushColor = RGB(Red, Green, Blue);
-			 Brush brush = Brush(brushName, brushColor);
-
-			 QuadrangleShaded quad = QuadrangleShaded(ppt, pen, brush);
-
-			 listShaded.PushElement(quad);
-			 break;
-		 }
-		 case DONUT:
-		 {
-			 char brushName[45];
-			 fin >> (brushName);
-			 fin >> Red >> Green >> Blue;
-			 COLORREF brushColor = RGB(Red, Green, Blue);
-			 Brush brush = Brush(brushName, brushColor);
-
-			 POINT pptIn[4];
-			 for (int i = 0; i < 4; i++)
+			 case CONTOUR:
 			 {
-				 fin >> pptIn[i].x >> pptIn[i].y;
+				 quad = QuadrangleContour(ppt, pen);
+
+				 listQuad.PushElement(quad);
+			 
+				 break;
 			 }
+			 case SHADED:
+			 {
+				 char brushName[45];
+				 fin >> (brushName);
+				 fin >> Red >> Green >> Blue;
 
-			 char PenNameIn[16];
-			 int PenWidthIn;
-			 fin >> PenNameIn;
-			 fin >> (PenWidthIn);
-			 fin >> Red >> Green >> Blue;
+				 COLORREF brushColor = RGB(Red, Green, Blue);
+				 Brush brush = Brush(brushName, brushColor);
 
-			 COLORREF PenColorIn = RGB(Red, Green, Blue);
-			 Pen penIn = Pen(PenNameIn, PenWidthIn, PenColorIn);
+				 quad = QuadrangleShaded(ppt, pen, brush);
 
-			 QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);
+				 listQuad.PushElement(quad);
+				 break;
+			 }
+			 case DONUT:
+			 {
+				 char brushName[45];
+				 fin >> (brushName);
+				 fin >> Red >> Green >> Blue;
+				 COLORREF brushColor = RGB(Red, Green, Blue);
+				 Brush brush = Brush(brushName, brushColor);
 
-			 listDonut.PushElement(quad);
+				 POINT pptIn[4];
+				 for (int i = 0; i < 4; i++)
+				 {
+					 fin >> pptIn[i].x >> pptIn[i].y;
+				 }
 
-			 break;
+				 char PenNameIn[16];
+				 int PenWidthIn;
+				 fin >> PenNameIn;
+				 fin >> (PenWidthIn);
+				 fin >> Red >> Green >> Blue;
+
+				 COLORREF PenColorIn = RGB(Red, Green, Blue);
+				 Pen penIn = Pen(PenNameIn, PenWidthIn, PenColorIn);
+
+				 QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);			 
+
+				 break;
+			 }
 		 }
-		 }
+
+		 listQuad.PushElement(quad);
 
 		 if (!fin.eof())
 		 {
@@ -287,18 +285,17 @@ template <class Quad>
 	 }
 	 fin.close();
 
-	 if (listContour.GetLength() != 0)
+	 if (listQuad.GetLength() != 0)
 	 {
-		 PrintColor(listContour);
+		 PrintColor(listQuad);
 		 cout <<"Enter color:\n";
 		 int red, green, blue;
 		 cin >> red >> green >> blue;
 
 		 QuadrangleContour foundContourQuad;
-		 bool isFind = FindByPenColor<QuadrangleContour>(listContour, &foundContourQuad, RGB(red, green, blue));
+		 bool isFind = FindByPenColor<QuadrangleContour>(listQuad, &foundContourQuad, RGB(red, green, blue));
 		 if (isFind)
 		 {
-			 //cout <<"Quad was found");
 			 DeleteAll(hwnd, hdc);
 			 foundContourQuad.Draw(hwnd);
 		 }
@@ -307,63 +304,9 @@ template <class Quad>
 			 cout <<"Quad was not found";
 		 }
 	 }
-	 if (listShaded.GetLength() != 0)
-	 {
-		 PrintColor(listShaded);
-		 cout <<"Enter color:\n";
-		 int red, green, blue;
-		 cin >> red >> green >> blue;
-
-		 QuadrangleShaded foundShadedQuad;
-		 bool isFind = FindByPenColor<QuadrangleShaded>(listShaded, &foundShadedQuad, RGB(red, green, blue));
-		 if (isFind)
-		 {
-			// cout <<"Quad was found");
-			 DeleteAll(hwnd, hdc);
-			 foundShadedQuad.Draw(hwnd);
-
-		 }
-		 else
-		 {
-			 cout <<"Quad was not found";
-		 }
-	 }
-	 if (listDonut.GetLength() != 0)
-	 {
-		 PrintColor(listDonut);
-
-		 cout <<"Enter color:\n";
-		 int red, green, blue;
-		 cin >> red >> green >> blue;
-
-		 QuadrangleDonut foundDonutQuad;
-		 bool isFind = FindByPenColor<QuadrangleDonut>(listDonut, &foundDonutQuad, RGB(red, green, blue));
-		 if (isFind)
-		 {
-			 //cout <<"Quad was found");
-			 DeleteAll(hwnd, hdc);
-			 foundDonutQuad.Draw(hwnd);
-		 }
-		 else
-		 {
-			 cout <<"Quad was not found";
-		 }
-	 }
-	// DrawAll(listContour, hwnd);
 	 
 	 const char* name = "listContour.txt";
-	 SaveAll<QuadrangleContour>(listContour, name);
-	 const char* nameShaded = "listShaded.txt";
-	 SaveAll<QuadrangleShaded>(listShaded, nameShaded);
-	 const char* nameDonut = "listDonut.txt";
-	 SaveAll<QuadrangleDonut>(listDonut, nameDonut);
-
-	 const char* name1 = "listContourReverse.txt";
-	 SaveAllReverse<QuadrangleContour>(listContour, name);
-	 const char* nameShaded1 = "listShadedReverse.txt";
-	 SaveAllReverse<QuadrangleShaded>(listShaded, nameShaded1);
-	 const char* nameDonut1 = "listDonutReverse.txt";
-	 SaveAllReverse<QuadrangleDonut>(listDonut, nameDonut1);
+	 SaveAll<QuadrangleContour>(listQuad, name);
 
 	 _getch();
  }

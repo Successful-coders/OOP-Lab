@@ -117,9 +117,10 @@
   <ItemGroup>
     <ClCompile Include="brush.cpp" />
     <ClCompile Include="Error.cpp" />
+    <ClCompile Include="Figure.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pen.cpp" />
-    <ClCompile Include="QdCountour.cpp" />
+    <ClCompile Include="QdContour.cpp" />
     <ClCompile Include="QdDonut.cpp" />
     <ClCompile Include="QdShaded.cpp" />
   </ItemGroup>
@@ -128,8 +129,9 @@
     <ClInclude Include="DrawTypeEnum.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="DoubleLinkedList.h" />
+    <ClInclude Include="Figure.h" />
     <ClInclude Include="pen.h" />
-    <ClInclude Include="QdCountour.h" />
+    <ClInclude Include="QdContour.h" />
     <ClInclude Include="QdDonut.h" />
     <ClInclude Include="QdShaded.h" />
   </ItemGroup>
