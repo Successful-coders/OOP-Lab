@@ -194,120 +194,185 @@ template <class Quad>
 	 COLORREF PenColor;
 	 DRAW_TYPE TypeDraw;
 	 char type[15];
-	 DoubleLinkedList<QuadrangleContour> listQuad = DoubleLinkedList<QuadrangleContour>();
 
-	 while (!fin.eof())
+
+	 fin >> type;
+	 try
 	 {
-		 fin >> type;
-		 try
-		 {
-			 TypeDraw = StringToEnum(type);
-		 }
-		 catch (ERROR error)
-		 {
-			 return Error::PrintError(error);
-		 }
+		 TypeDraw = StringToEnum(type);
+	 }
+	 catch (ERROR error)
+	 {
+		 return Error::PrintError(error);
+	 }
 
-		 for (int i = 0; i < 4; i++)
-		 {
-			 fin>>(ppt[i].x)>>(ppt[i].y);
-		 }
+	 for (int i = 0; i < 4; i++)
+	 {
+		 fin >> (ppt[i].x) >> (ppt[i].y);
+	 }
 
-		 fin>>(PenName);
-		 fin >> (PenWidth);
-		 int Red, Green, Blue;
-		 fin >> Red >> Green >> Blue;
+	 fin >> (PenName);
+	 fin >> (PenWidth);
+	 int Red, Green, Blue;
+	 fin >> Red >> Green >> Blue;
 
-		 PenColor = RGB(Red, Green, Blue);
-		 Pen pen = Pen(PenName, PenWidth, PenColor);
-
-		 QuadrangleContour quad;
+	 PenColor = RGB(Red, Green, Blue);
+	 Pen pen = Pen(PenName, PenWidth, PenColor);
+	 do
+	 {
 		 switch (TypeDraw)
 		 {
-			 case CONTOUR:
+		 case CONTOUR:
+		 {
+			 fin.close();
+			 QuadrangleContour quad = QuadrangleContour(ppt, pen);
+			 quad.Draw(hwnd);
+			 int codePress = _getch();
+			 while (codePress != 27)
 			 {
-				 quad = QuadrangleContour(ppt, pen);
-
-				 listQuad.PushElement(quad);
-			 
-				 break;
-			 }
-			 case SHADED:
-			 {
-				 char brushName[45];
-				 fin >> (brushName);
-				 fin >> Red >> Green >> Blue;
-
-				 COLORREF brushColor = RGB(Red, Green, Blue);
-				 Brush brush = Brush(brushName, brushColor);
-
-				 quad = QuadrangleShaded(ppt, pen, brush);
-
-				 listQuad.PushElement(quad);
-				 break;
-			 }
-			 case DONUT:
-			 {
-				 char brushName[45];
-				 fin >> (brushName);
-				 fin >> Red >> Green >> Blue;
-				 COLORREF brushColor = RGB(Red, Green, Blue);
-				 Brush brush = Brush(brushName, brushColor);
-
-				 POINT pptIn[4];
-				 for (int i = 0; i < 4; i++)
+				 switch (codePress)
 				 {
-					 fin >> pptIn[i].x >> pptIn[i].y;
+				 case UP:
+				 {
+					 quad.Move(hwnd, 0, -20);
+					 break;
+				 }
+				 case RIGHT:
+				 {
+					 quad.Move(hwnd, 20, 0);
+					 break;
 				 }
 
-				 char PenNameIn[16];
-				 int PenWidthIn;
-				 fin >> PenNameIn;
-				 fin >> (PenWidthIn);
-				 fin >> Red >> Green >> Blue;
+				 case DOWN:
+				 {
+					 quad.Move(hwnd, 0, 20);
+					 break;
+				 }
 
-				 COLORREF PenColorIn = RGB(Red, Green, Blue);
-				 Pen penIn = Pen(PenNameIn, PenWidthIn, PenColorIn);
-
-				 QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);			 
+				 case LEFT:
+				 {
+					 quad.Move(hwnd, -20, 0);
+					 break;
+				 }
 
 				 break;
+				 }
+				 codePress = _getch();
 			 }
+			 FILE* saveFile = fopen("ContourSave.txt","w");
+			 quad.Save(saveFile);
+			 break;
 		 }
-
-		 listQuad.PushElement(quad);
-
-		 if (!fin.eof())
+		 case SHADED:
 		 {
-			 char newLine[1];
-			 fin.getline(newLine, 1);
+			 char brushName[45];
+			 fin >> brushName;
+			 fin >> Red >> Green >> Blue;
+			 fin.close();
+			 COLORREF brushColor = RGB(Red, Green, Blue);
+			 Brush brush = Brush(brushName, brushColor);
+
+			 QuadrangleShaded quad = QuadrangleShaded(ppt, pen, brush);
+			 quad.Draw(hwnd);
+			 int codePress = _getch();
+			 while (codePress != 27)
+			 {
+				 switch (codePress)
+				 {
+				 case UP:
+				 {
+					 quad.Move(hwnd, 0, -20);
+					 break;
+				 }
+				 case RIGHT:
+				 {
+					 quad.Move(hwnd, 20, 0);
+					 break;
+				 }
+
+				 case DOWN:
+				 {
+					 quad.Move(hwnd, 0, 20);
+					 break;
+				 }
+
+				 case LEFT:
+				 {
+					 quad.Move(hwnd, -20, 0);
+					 break;
+				 }
+				 break;
+				 }
+				 codePress = _getch();
+			 }
+			 FILE* saveFile = fopen("ContourSave.txt", "w");
+			 quad.Save(saveFile);
+			 break;
 		 }
-	 }
-	 fin.close();
-
-	 if (listQuad.GetLength() != 0)
-	 {
-		 PrintColor(listQuad);
-		 cout <<"Enter color:\n";
-		 int red, green, blue;
-		 cin >> red >> green >> blue;
-
-		 QuadrangleContour foundContourQuad;
-		 bool isFind = FindByPenColor<QuadrangleContour>(listQuad, &foundContourQuad, RGB(red, green, blue));
-		 if (isFind)
+		 case DONUT:
 		 {
-			 DeleteAll(hwnd, hdc);
-			 foundContourQuad.Draw(hwnd);
-		 }
-		 else
-		 {
-			 cout <<"Quad was not found";
-		 }
-	 }
-	 
-	 const char* name = "listContour.txt";
-	 SaveAll<QuadrangleContour>(listQuad, name);
+			 char brushName[45];
+			 fin >> brushName;
+			 fin >> Red >> Green >> Blue;
+			 COLORREF brushColor = RGB(Red, Green, Blue);
+			 Brush brush = Brush(brushName, brushColor);
 
-	 _getch();
+			 POINT pptIn[4];
+			 for (int i = 0; i < 4; i++)
+			 {
+				 fin >> (pptIn[i].x) >> (pptIn[i].y);
+			 }
+
+			 char PenNameIn[16];
+			 int PenWidthIn;
+			 fin >> PenNameIn;
+			 fin >> PenWidthIn;
+			 fin >> Red >> Green >> Blue;
+			 fin.close();
+			 COLORREF PenColorIn = RGB(Red, Green, Blue);
+			 Pen penIn = Pen(PenNameIn, PenWidthIn, PenColorIn);
+
+			 QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);
+			 quad.Draw(hwnd);
+			 int codePress = _getch();
+			 while (codePress != 27)
+			 {
+				 switch (codePress)
+				 {
+				 case UP:
+				 {
+					 quad.Move(hwnd, 0, -20);
+					 break;
+				 }
+				 case RIGHT:
+				 {
+					 quad.Move(hwnd, 20, 0);
+					 break;
+				 }
+
+				 case DOWN:
+				 {
+					 quad.Move(hwnd, 0, 20);
+					 break;
+				 }
+
+				 case LEFT:
+				 {
+					 quad.Move(hwnd, -20, 0);
+					 break;
+				 }
+				 break;
+				 }
+				 codePress = _getch();
+			 }
+			 FILE* saveFile = fopen("ContourSave.txt", "w");
+			 quad.Save(saveFile);
+			 break;
+		 }
+		 }
+	 } while (_getch() != 27);
+
+
+
  }
- 
+

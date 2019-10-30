@@ -9,9 +9,9 @@ protected:
 	POINT points[4];
 	int StringToPenStyle(const char string[]);
 	void CheckConvex();
-	void CheckInFrame(HWND hwnd);
 	bool IsPoint(POINT k1, POINT k2, POINT k3, POINT k4);
 	void DeleteAll(HWND hwnd);
+	void CheckInFrame(HWND hwnd);
 public:
 	QuadrangleContour();
 	QuadrangleContour(POINT* points, Pen qd_pen);
