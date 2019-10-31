@@ -2,7 +2,7 @@
 
 Brush::Brush()
 {
-	memcpy(this->name, "BLACK_BRUSH", 16);
+	memcpy(this->name, "SOLID", 6);
 	this->color = RGB(0, 0, 0);
 }
 Brush::Brush(const char* name)

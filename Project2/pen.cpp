@@ -12,6 +12,7 @@ Pen::Pen(char* name, int width, COLORREF color)
 	this->width = width;
 	this->color = color;
 }
+
 char* Pen::GetName()
 {
 	return name;
