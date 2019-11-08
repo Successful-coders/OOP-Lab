@@ -36,28 +36,6 @@ QuadrangleDonut::QuadrangleDonut(POINT* points, POINT* pointsIn, Pen qd_pen, Pen
 	this->brush = qd_brush;
 }
 
-//POINT *QuadrangleDonut::GetPointIn()
-//{
-//	return pointsIn;
-//}
-//
-//void QuadrangleDonut::SetPointIn(POINT* points)
-//{
-//	for (int i = 0; i < 4; i++)
-//	{
-//		this->points[i] = points[i];
-//	}
-//}
-
-//Pen QuadrangleDonut::GetPenIn()
-//{
-//	return penIn;
-//}
-//
-//void QuadrangleDonut::SetPenIn(char* name, int width, COLORREF color)
-//{
-//	this->penIn = Pen(name, width, color);
-//}
 
 
 
@@ -68,8 +46,7 @@ void QuadrangleDonut::Draw(HWND hwnd)
 		CheckConvex();
 		CheckInFrame(hwnd);
 
-
-		CheckConvex2();
+		In.CheckConvex();
 		CheckIncluded();
 	}
 	catch (ERROR error)
@@ -78,71 +55,18 @@ void QuadrangleDonut::Draw(HWND hwnd)
 	}
 
 	//Creating pen
-	HPEN newPen;
-	try
-	{
-		newPen = CreatePen(StringToPenStyle(pen.GetName()), pen.GetWidth(), pen.GetColor());
-	}
-	catch (ERROR error)
-	{
-		return Error::PrintError(error);
-	}
-	HDC hdc = GetDC(hwnd);
-	HPEN oldPen = SelectPen(hdc, newPen);
-
-	HBRUSH newBrush;
-	HBRUSH oldBrush;
-
-	//Creating brush
-	if (strcmp(brush.GetName(), "SOLID") == 0)
-	{
-		newBrush = CreateSolidBrush(brush.GetColor());
-	}
-	else
-	{
-		try
-		{
-			newBrush = CreateHatchBrush(StringToBrushHash(brush.GetName()), brush.GetColor());
-		}
-		catch (ERROR error)
-		{
-			return Error::PrintError(error);
-		}
-	}
-	oldBrush = SelectBrush(hdc, newBrush);
-
-	Polygon(hdc, GetPoint(), 4);
-
-	//Creating pen
-	newPen ;
-	Pen Inpen = In.GetPen();
-	try
-	{
-		newPen = CreatePen(StringToPenStyle(Inpen.GetName()),Inpen.GetWidth(), Inpen.GetColor());
-	}
-	catch (ERROR error)
-	{
-		return Error::PrintError(error);
-	}
-	oldPen = SelectPen(hdc, newPen);
-
-	//Creating brush
-	newBrush = CreateSolidBrush(RGB(0,0,0));
-	oldBrush = SelectBrush(hdc, newBrush);
-
-	Polygon(hdc, In.GetPoint(), 4);
+	QuadrangleShaded::Draw(hwnd);
+	
+	In.Draw(hwnd);
+	
 
 }
 
 void QuadrangleDonut::Move(HWND hwnd, int x, int y)
 {
 	DeleteAll(hwnd);
-	for (int i = 0; i < 4; i++)
-	{
-		points[i].x += x;
-		points[i].y += y;
-	}
-		In.Move(hwnd, x, y);
+	QuadrangleShaded::Move(hwnd, x, y);
+	In.Move(hwnd, x, y);
 
 	HWND newhwnd = GetConsoleWindow();
 	Draw(newhwnd);
@@ -164,17 +88,6 @@ void QuadrangleDonut::Save(FILE* saveFile)
 	fprintf(saveFile, "%s\n", brush.GetName());
 	fprintf(saveFile, "%d %d %d\n", GetRValue(brush.GetColor()), GetGValue(brush.GetColor()), GetBValue(brush.GetColor()));
 	In.Save(saveFile);
-
-}
-void QuadrangleDonut::CheckConvex2()
-{
-	if (!IsPoint(In.GetPoint()[0], In.GetPoint()[1], In.GetPoint()[2], In.GetPoint()[3])
-		|| !IsPoint(In.GetPoint()[1], In.GetPoint()[2], In.GetPoint()[3], In.GetPoint()[0])
-		|| !IsPoint(In.GetPoint()[2], In.GetPoint()[3], In.GetPoint()[0], In.GetPoint()[1])
-		|| !IsPoint(In.GetPoint()[3], In.GetPoint()[0], In.GetPoint()[1], In.GetPoint()[2]))
-	{
-		throw NOT_CONVEX;
-	}
 
 }
 

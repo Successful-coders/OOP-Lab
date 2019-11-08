@@ -218,6 +218,7 @@ template <class Quad>
 
 	 PenColor = RGB(Red, Green, Blue);
 	 Pen pen = Pen(PenName, PenWidth, PenColor);
+	 Figure *quad;
 	 do
 	 {
 		 switch (TypeDraw)
@@ -225,42 +226,9 @@ template <class Quad>
 		 case CONTOUR:
 		 {
 			 fin.close();
-			 QuadrangleContour quad = QuadrangleContour(ppt, pen);
-			 quad.Draw(hwnd);
-			 int codePress = _getch();
-			 while (codePress != 27)
-			 {
-				 switch (codePress)
-				 {
-				 case UP:
-				 {
-					 quad.Move(hwnd, 0, -20);
-					 break;
-				 }
-				 case RIGHT:
-				 {
-					 quad.Move(hwnd, 20, 0);
-					 break;
-				 }
+			 QuadrangleContour quadContour = QuadrangleContour(ppt, pen);
+			 quad = &quadContour;
 
-				 case DOWN:
-				 {
-					 quad.Move(hwnd, 0, 20);
-					 break;
-				 }
-
-				 case LEFT:
-				 {
-					 quad.Move(hwnd, -20, 0);
-					 break;
-				 }
-
-				 break;
-				 }
-				 codePress = _getch();
-			 }
-			 FILE* saveFile = fopen("ContourSave.txt","w");
-			 quad.Save(saveFile);
 			 break;
 		 }
 		 case SHADED:
@@ -272,41 +240,9 @@ template <class Quad>
 			 COLORREF brushColor = RGB(Red, Green, Blue);
 			 Brush brush = Brush(brushName, brushColor);
 
-			 QuadrangleShaded quad = QuadrangleShaded(ppt, pen, brush);
-			 quad.Draw(hwnd);
-			 int codePress = _getch();
-			 while (codePress != 27)
-			 {
-				 switch (codePress)
-				 {
-				 case UP:
-				 {
-					 quad.Move(hwnd, 0, -20);
-					 break;
-				 }
-				 case RIGHT:
-				 {
-					 quad.Move(hwnd, 20, 0);
-					 break;
-				 }
+			 QuadrangleShaded quadShaded = QuadrangleShaded(ppt, pen, brush);
+			 quad = &quadShaded;
 
-				 case DOWN:
-				 {
-					 quad.Move(hwnd, 0, 20);
-					 break;
-				 }
-
-				 case LEFT:
-				 {
-					 quad.Move(hwnd, -20, 0);
-					 break;
-				 }
-				 break;
-				 }
-				 codePress = _getch();
-			 }
-			 FILE* saveFile = fopen("ContourSave.txt", "w");
-			 quad.Save(saveFile);
 			 break;
 		 }
 		 case DONUT:
@@ -332,47 +268,50 @@ template <class Quad>
 			 COLORREF PenColorIn = RGB(Red, Green, Blue);
 			 Pen penIn = Pen(PenNameIn, PenWidthIn, PenColorIn);
 
-			 QuadrangleDonut quad = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);
-			 quad.Draw(hwnd);
-			 int codePress = _getch();
-			 while (codePress != 27)
-			 {
-				 switch (codePress)
-				 {
-				 case UP:
-				 {
-					 quad.Move(hwnd, 0, -20);
-					 break;
-				 }
-				 case RIGHT:
-				 {
-					 quad.Move(hwnd, 20, 0);
-					 break;
-				 }
+			 QuadrangleDonut quadDonut = QuadrangleDonut(ppt, pptIn, pen, penIn, brush);
+			 quad = &quadDonut;
 
-				 case DOWN:
-				 {
-					 quad.Move(hwnd, 0, 20);
-					 break;
-				 }
-
-				 case LEFT:
-				 {
-					 quad.Move(hwnd, -20, 0);
-					 break;
-				 }
-				 break;
-				 }
-				 codePress = _getch();
-			 }
-			 FILE* saveFile = fopen("ContourSave.txt", "w");
-			 quad.Save(saveFile);
 			 break;
 		 }
 		 }
+
+
+
+		 quad->Draw(hwnd);
+		 int codePress = _getch();
+		 while (codePress != 27)
+		 {
+			 switch (codePress)
+			 {
+			 case UP:
+			 {
+				 quad->Move(hwnd, 0, -20);
+				 break;
+			 }
+			 case RIGHT:
+			 {
+				 quad->Move(hwnd, 20, 0);
+				 break;
+			 }
+
+			 case DOWN:
+			 {
+				 quad->Move(hwnd, 0, 20);
+				 break;
+			 }
+
+			 case LEFT:
+			 {
+				 quad->Move(hwnd, -20, 0);
+				 break;
+			 }
+
+			 break;
+			 }
+			 codePress = _getch();
+		 }
+		 FILE* saveFile = fopen("Save.txt", "w");
+		 quad->Save(saveFile);
 	 } while (_getch() != 27);
-
-
-
  }
 
