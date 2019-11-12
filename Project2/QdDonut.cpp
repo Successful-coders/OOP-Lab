@@ -11,16 +11,10 @@ QuadrangleDonut::QuadrangleDonut()
 	this->points[3].x = 50;
 	this->points[3].y = 100;
 
-	POINT* point;
-	for (int i = 0; i < 4; i++)
-	{
-		point[i].x = 0;
-		point[i].y = 0;
-	}
-	In.SetPoint(point);
 	Pen qd_pen();
-	Pen qd_penIn();
 	Brush qd_brush();
+	In = QuadrangleShaded();
+	
 }
 QuadrangleDonut::QuadrangleDonut(POINT* points, POINT* pointsIn, Pen qd_pen, Pen qd_penIn, Brush qd_brush)
 {
